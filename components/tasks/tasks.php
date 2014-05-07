@@ -51,7 +51,7 @@ class Tasks extends Components {
 				if (!$task) { return false; }
 				if (isset($this->get->return_url)) { $this->current_url = $this->get->return_url; }
 				
-				$this->setSetformContent(null, $task);
+				$this->setTaskformContent(null, $task);
 				$this->renderViewContent();
 				echo $this->View->content;
 				break;

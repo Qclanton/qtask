@@ -1,5 +1,97 @@
-
+#task--wrapper {
+    background: none repeat scroll 0 0 #F5F5F5;
+    box-shadow: 0 4px 3px #CCCCCC;
+	padding:15px;}
+	
+.edit-icon {
+    vertical-align: middle;
+    width: 20px;
+	}
+	
+.edit-button {
+    background: linear-gradient(#FCFCFC, #EEEEEE) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    color: #5B5B5B;
+    float: right;
+    margin: 17px 5px 5px;
+    padding: 8px;
+    text-decoration: none;
+	}
+	
+.edit-button:hover {
+	-webkit-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	-moz-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	}
+	
 #task--wrapper h2 {
     color: #33CC66;
     font-weight: normal;
 }
+#task--wrapper h3 {
+    color: #5B5B5B;
+    font-size: 14px;
+    font-weight: bold;
+	border-bottom:1px solid #CCCCCC;
+	padding-bottom:10px;
+}
+#task--wrapper hr {
+    background: none repeat scroll 0 0 #CCCCCC;
+    border: medium none;
+    height: 1px;}
+	
+.task-details {
+	border-bottom:1px solid #CCCCCC;
+    padding-bottom: 10px;}
+	
+.detail-name {
+	color:#5B5B5B;
+	font-size:13px;
+    font-weight: normal;}
+	
+.first-col {
+	width:120px;}
+	
+#task--wrapper td {
+	color:#5B5B5B;
+	font-size:13px;
+	font-weight:bold;}
+	
+#task-description {
+	font-size: 13px;
+    padding: 0 10px 10px;
+	border-bottom:1px solid #CCCCCC;}
+	
+#task-description  p, tr, td, th, ol, ul, li, span {
+	font-size: 13px;}
+	
+#task-description li {
+	padding-left:10px;}
+	
+#task-subtask-button {
+	height:40px;
+	border-bottom:1px solid #CCCCCC;}
+	
+#task-subtask-button span{
+	text-decoration:none;
+}
+
+.subtask-button {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px 8px 12px;
+	background:linear-gradient(#FCFCFC, #EEEEEE);
+	text-decoration:none;
+	color:#5B5B5B;}
+	
+.subtask-button:hover {
+	-webkit-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	-moz-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	}
+
+.plus-icon-sub{
+    vertical-align: middle;
+    width: 20px;}

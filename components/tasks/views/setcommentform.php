@@ -1,4 +1,7 @@
+<link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/setcommentform-style.css" />
+
 <div class="comment-form--wrapper">
+	<h3>Add Comment</h3>
 	<form action="<?= $this->site_url; ?>index.php?component=tasks&action=setcomment" method="post">
 		<input type="hidden" name="id" value="<?= $comment->id; ?>"></input>
 		<input type="hidden" name="task_id" value="<?= $comment->task_id; ?>"></input>
@@ -7,7 +10,7 @@
 		<input type="hidden" name="modification_date" value="<?= $comment->modification_date; ?>"></input>
 		<input type="hidden" name="redirection_url" value="<?= $this->current_url; ?>"></input>
 		
-		<input type="textarea" name="text" value="<?= $comment->text; ?>"></input>
+		<textarea cols="30" rows="5" name="text" value="<?= $comment->text; ?>" class="textarea-input"></textarea>
 		<br />
 		<button>Set</button>
 	</form>

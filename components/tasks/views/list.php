@@ -2,16 +2,14 @@
 
 <div id="tasklist">
 <? if (empty($tasks)) { ?><div id="no-content">There is no tasks</div> <? } else { ?>
-	
-	<a href="<?= $this->site_url; ?>index.php?component=tasks&action=showsetform">
-		<div class="plus"><h3>Create New Task</h3><img src="<?= $this->site_url; ?>components/tasks/views/images/plus.png"></img></div>
-	</a>
 	Blok with tasks
 	<br />
 	Tasks:
 	<br />
-	</div>
-	
+</div>
+<a href="<?= $this->site_url; ?>index.php?component=tasks&action=showsetform">
+	<div class="plus"><h3>Create New Task</h3><img src="<?= $this->site_url; ?>components/tasks/views/images/plus.png"></img></div>
+</a>
 	<table cellspacing="0" cellpadding="5" class="task-table">
 		<thead class="table-header">
 			<tr>
@@ -36,14 +34,14 @@
 											<?= $task->title; ?>
 										</a>											
 									</h3>
-									<br />
-									Assigned to: <?= $task->assigned; ?>
 									<? if (!empty($this->user_id)) { ?>
 										<div class="comments" id="comments-task--<?= $task->id; ?>">
 											<div class="comments-content-wrapper" style="display:none"></div>
 											<span class="comments-qty" id="comments-qty-task--<?= $task->id; ?>"><?= $task->comments_qty; ?></span>
 										</div>
 									<? } ?>
+									Assigned to: <?= $task->assigned; ?>
+
 								</div>	
 							<? } ?>
 						<? } ?>	

@@ -1,0 +1,14 @@
+.comment-form--wrapper {}
+
+.comment-form--wrapper h3{
+    border-bottom: 1px solid #CCCCCC;
+    color: #5B5B5B;
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 10px;}
+	
+.textarea-input {
+    height: 160px;
+    width: 100%;
+	overflow-y: scroll;
+}

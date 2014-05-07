@@ -56,9 +56,6 @@
 			%bottom%
 		</div>
 	</div>
-	<aside>
-		%sidebar%
-	</aside>
 </div>
 	<div id="footer">
 		<div id="footer-wrapper">

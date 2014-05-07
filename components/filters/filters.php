@@ -11,10 +11,8 @@ class Filters extends Components {
 	}
 	
 	public function load() {
-		$filter = (isset($this->get->filter) ? $this->get->filter : "mytasks");
+		$filter = (isset($this->get->filter) ? $this->get->filter : "mytasks");		
 		
-		$this->Sidebar->setItems(['Create Task' => $this->site_url . "index.php?component=tasks&action=showsetform"]);
-				
 		switch($filter) {
 			case "mytasks":
 				if (empty($this->user_id)) { $this->redirect($this->site_url); }				
@@ -29,8 +27,6 @@ class Filters extends Components {
 				$this->setUserLastVisitDate($filter . $this->name);	
 				break;
 		}
-		
-		$this->content['sidebar'] = $this->Sidebar->getSidebar();		
 	}
 	
 

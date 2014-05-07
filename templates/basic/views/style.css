@@ -1,0 +1,142 @@
+html, body {
+	background: none repeat scroll 0 0 #FFFFFF;
+    font-family: open sans;
+    margin: 0;
+    padding: 0;
+	width:100%;
+	height:100%;
+}
+body p, tr, td, th, ol, ul, li {
+	font-size:14px;
+	color: #303030;
+	font-family: open sans;}
+
+#fixed-block { 
+	}
+	
+#header {
+	width:1000px;
+	margin:10px auto; 
+	height:80px;}
+
+#header-wrapper {
+	margin:0;}
+	
+#logo {
+    float: left;
+    margin: auto;
+    position: relative;
+    top: 5px;
+	}
+
+ /* top menu */
+	
+#menu {
+	}
+
+#menu ul {
+	position: relative;
+	width:400px;
+	top:25px;
+	left:100px;
+	margin:0px;
+	}
+	
+#menu ul > li {
+	float: left;
+	list-style: none outside none; }
+	
+#menu ul > li > a {
+	color:#5B5B5B;
+	font-size: 16px;
+	margin: 0 12px 0 15px;
+	text-decoration: none; 
+	text-transform:uppercase;}
+	
+/* login form */
+
+#login-form--wrapper {
+	float: right;
+	position: relative;
+	right: 0;
+	top: 22px;
+	width: 282px;}
+		
+#login-form input {
+	border: 1px solid #B3B3B3;
+	border-radius: 5px;
+	color: #737373;
+	font-size: 85%;
+	height: 30px;
+	margin-bottom: 10px;
+	padding-left: 5px;
+	width: 100px;}
+	
+#login-button,
+#logout-button {
+	background: none repeat scroll 0 0 #5B5B5B;
+	border: 1px solid #B3B3B3;
+	border-radius: 5px;
+	color: #FFFFFF;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 1.07143rem;
+	line-height: 1.4545em;
+	margin-bottom: 0;
+	padding: 1px 10px;
+	text-align: center;
+	vertical-align: middle;}
+
+#logout-button  {
+	float:right;}
+	
+/*main container */
+
+.title-block {
+	text-align:center;
+	color:#FFFFFF;
+	background:#33CC66;
+	height:100px;
+	}
+	
+.title-block h2 {
+    font-weight: normal;
+    margin: 0 auto;
+    padding-top: 30px;
+    text-align: left;
+    width: 1000px;}
+	
+#breadcrumbs {
+	background:none repeat scroll 0 0 #F5F5F5;
+	box-shadow: 0 4px 3px #CCCCCC;
+	margin-bottom:20px;}
+
+#breadcrumbs-wrapper {
+	font-size: 14px;
+	margin: 0 auto;
+	padding: 15px 0;
+	width: 1000px;}
+	
+#breadcrumbs a {
+	color:#595959;
+	cursor:pointer;}
+	
+#main-container {
+	position:relative;
+	width:1000px;
+	margin:0 auto;
+	min-height:650px;}
+	
+/*footer*/
+
+#footer {
+	background:none repeat scroll 0 0 #5B5B5B;
+	}
+#footer-wrapper {
+	width:1000px;
+	margin:0 auto;
+	text-align:center;
+	color:#FFFFFF;
+	color: #FFFFFF;
+	padding: 15px;
+	}

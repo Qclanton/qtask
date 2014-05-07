@@ -16,6 +16,4 @@ $config = [
 		'db_name' => 'qtask'
 	]
 ];
-
-$test = "test";
 ?>

@@ -36,7 +36,7 @@ class Tasks extends Components {
 				$result = $this->setTaskContent($this->get->id);
 				if (!$result) {
 					$this->loadhelpers(["ErrorHandler"]);
-					$this->content['error'] = $this->ErrorHandler->getHtml([["task" => "Task doesn't exists"]]);
+					$this->content['error'] = $this->ErrorHandler->getHtml([['task' => "Task doesn't exists"]]);
 					return false;
 				}
 				$this->renderViewContent();

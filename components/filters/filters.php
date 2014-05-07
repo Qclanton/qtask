@@ -7,7 +7,6 @@ class Filters extends Components {
 	public function prepare() {
 		$this->defineUserLevel($this->name);
 		$this->loadModels(["Filters", "Tasks", "Projects"]);
-		$this->loadHelpers(["Sidebar"]);
 	}
 	
 	public function load() {

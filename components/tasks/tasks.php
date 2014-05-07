@@ -25,7 +25,9 @@ class Tasks extends Components {
 				break;
 			case "showsetform":
 				$id = (isset($this->get->id) ? $this->get->id : null);
-				$this->setSetformContent($id);
+				$parent_task_id = (isset($this->get->parent_task_id) ? $this->get->parent_task_id : null);
+				
+				$this->setTaskformContent($id, null, $parent_task_id);
 				$this->renderViewContent();
 				$this->content['top'] = $this->View->content;
 				
@@ -166,18 +168,29 @@ class Tasks extends Components {
 		$task = $this->Tasks->getTask($task_id);
 		if (!$task) { return false; } 
 		
+		// Attach parents and childrens info
+		$task['subtasks'] = $this->Tasks->getSubtasks($task['id']);
+		if (!empty($task['parent_task_id'])) { $task['parent_task'] = $this->Tasks->getTask($task['parent_task_id']); }
+		
 		$this->setView("components/tasks/views/task.php");
 		$this->setViewVars(['task'=>(object)$task]);
 		
 		return true;
 	}
 	
-	public function setSetformContent($task_id=null, $task=null) {
+	
+	public function setTaskformContent($task_id=null, $task=null, $parent_task_id=null) {
 		$this->loadModels(["Projects"]);
-			
+		
+		// Get task	
 		$task = (!empty($task) ? $task : $this->Tasks->getTask($task_id));
 		if (!$task) { $task = $this->Tasks->getDefaultTask($this->user_id); }
 		$task = (object)$task;
+		
+		// Attach parents and childrens info
+		if (!empty($parent_task_id) && !isset($task->parent_task_id)) { $task->parent_task_id = $parent_task_id; }
+		$task->subtasks = $this->Tasks->getSubtasks($task->id);
+		
 		
 		$vars = [
 			'users' => $this->Users->getUsers(),
@@ -188,7 +201,7 @@ class Tasks extends Components {
 			'task' => $task	
 		];
 		
-		$this->setView("components/tasks/views/setform.php", $vars);
+		$this->setView("components/tasks/views/settaskform.php", $vars);
 		
 		return true;
 	}

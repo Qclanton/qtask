@@ -109,7 +109,7 @@ class Tasks extends Models {
 	";
 	
 	public function getTasks($project_id) {
-		$query = self::TASK_QUERY_BASE . " WHERE t.`project_id`=? ORDER BY t.`due_date` DESC, `pri`.`id` DESC";
+		$query = self::TASK_QUERY_BASE . " WHERE t.`project_id`=? ORDER BY t.`due_date` DESC, pri.`id` DESC";
 		$tasks = $this->Database->getObject($query, [$project_id]);
 		
 		return $tasks;
@@ -120,6 +120,21 @@ class Tasks extends Models {
 		$task = $this->Database->getRow($query, [$id]);
 		
 		return $task;	
+	}
+	
+	public function getSubtasks($task_id) {
+		$query = self::TASK_QUERY_BASE . " WHERE t.`parent_task_id`=?";
+		$subtasks = $this->Database->getObject($query, [$task_id]);
+		
+		return $subtasks; 
+	}
+	
+	public function attachSubtasks($tasks) {
+		foreach ($tasks as &$task) {
+			$task->subtasks = $this->getSubtasks($task->id);
+		}
+		
+		return $tasks;
 	}
 	
 	public function getDefaultTask($user_id="1", $project_id="1") {

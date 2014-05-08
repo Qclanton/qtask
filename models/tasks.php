@@ -108,7 +108,7 @@ class Tasks extends Models {
 			`priorities` pri ON (pri.`id`=t.`priority_id`) JOIN 
 			`users` author ON (author.`id`=t.`author_id`)
 	";
-	const TASK_QUERY_BASE_COLUMNS = [
+	public $TASK_QUERY_BASE_COLUMNS = [
 		"id", 
 		"parent_task_id", 
 		"project_id", 

@@ -108,27 +108,7 @@ class Tasks extends Models {
 			`priorities` pri ON (pri.`id`=t.`priority_id`) JOIN 
 			`users` author ON (author.`id`=t.`author_id`)
 	";
-	public $TASK_QUERY_BASE_COLUMNS = [
-		"id", 
-		"parent_task_id", 
-		"project_id", 
-		"status_id", 
-		"priority_id", 
-		"author_id", 
-		"assigned_type", 
-		"assigned_id",  
-		"due_date", 
-		"closed_date",      
-		"title",
-		"text",
-		
-		"project",
-		"status",
-		"status_classes",
-		"priority",
-		"priority_weight",
-		"priority_classes"
-	];
+	const TASK_QUERY_BASE_COLUMNS = "id|parent_task_id|project_id|status_id|priority_id|author_id|assigned_type|assigned_id|due_date|closed_date|title|text|project|status|status_classes|priority|priority_weight|priority_classes";
 	
 	public function getTasks($project_id=null, $params=[]) {
 		$query = self::TASK_QUERY_BASE . "WHERE ?";

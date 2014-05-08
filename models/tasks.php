@@ -91,6 +91,7 @@ class Tasks extends Models {
 			s.`title` AS 'status',
 			s.`classes` as 'status_classes',
 			pri.`title` AS 'priority',
+			pri.`weight` AS 'priority_weight',
 			pri.`classes` AS 'priority_classes',
 			author.`name` as 'author',
 				CASE 
@@ -107,13 +108,45 @@ class Tasks extends Models {
 			`priorities` pri ON (pri.`id`=t.`priority_id`) JOIN 
 			`users` author ON (author.`id`=t.`author_id`)
 	";
+	const TASK_QUERY_BASE_COLUMNS = [
+		"id", 
+		"parent_task_id", 
+		"project_id", 
+		"status_id", 
+		"priority_id", 
+		"author_id", 
+		"assigned_type", 
+		"assigned_id",  
+		"due_date", 
+		"closed_date",      
+		"title",
+		"text",
+		
+		"project",
+		"status",
+		"status_classes",
+		"priority",
+		"priority_weight",
+		"priority_classes"
+	];
 	
-	public function getTasks($project_id) {
-		$query = self::TASK_QUERY_BASE . " WHERE t.`project_id`=? ORDER BY t.`due_date` DESC, pri.`id` DESC";
-		$tasks = $this->Database->getObject($query, [$project_id]);
+	public function getTasks($project_id=null, $params=[]) {
+		$query = self::TASK_QUERY_BASE . "WHERE ?";
+		$vars = ["1"];		
+		if (!empty($project_id)) {
+			$query .= " AND t.`project_id`=?";
+			$vars[] = $project_id;
+		}	
+	
+		$confines = $this->getConfines($params);
+		$query .= $confines['query'];
+		$vars = array_merge($vars, $confines['vars']);
+		
+		$tasks = $this->Database->getObject($query, $vars);
 		
 		return $tasks;
 	}
+	
 	
 	public function getTask($id = null) {
 		$query = self::TASK_QUERY_BASE . " WHERE t.`id`=?";

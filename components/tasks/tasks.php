@@ -109,7 +109,7 @@ class Tasks extends Components {
 				$comment = $this->Tasks->getComment($this->get->id);				
 				if (!$comment) {
 					$this->loadhelpers(["ErrorHandler"]);
-					$this->content['error'] = $this->ErrorHandler->getHtml([["comment" => "Comment doesn't exists"]]);
+					$this->content['error'] = $this->ErrorHandler->getHtml([['comment' => "Comment doesn't exists"]]);
 					return false;
 				}
 			
@@ -126,6 +126,8 @@ class Tasks extends Components {
 				$this->showComments($this->get->task_id);
 				echo $this->content['bottom'];
 				break;
+			case "getlistfortie":				
+				$tasks = $this->Tasks->getTasksList();
 			default:
 				$this->redirect($this->site_url);
 				break;
@@ -206,8 +208,14 @@ class Tasks extends Components {
 		return true;
 	}
 	
-	public function setListContent($project_id) {			
-		$tasks = $this->Tasks->getTasks($project_id);
+	public function setListContent($project_id) {
+		$params = [
+			'order'=>[
+				['column'=>"due_date", 'side'=>"DESC"],
+				['column'=>"priority_weight", 'side'=>"DESC"],
+			]
+		];			
+		$tasks = $this->Tasks->getTasks($project_id, $params);
 		
 		if (!empty($this->user_id)) {
 			$tasks = $this->Tasks->attachCommentsQty($tasks, $this->user_id, $this->getUserLastVisitDate($this->name));

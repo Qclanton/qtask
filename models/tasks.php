@@ -92,7 +92,7 @@ class Tasks extends Models {
 	
 	public function untieTask($task_id, $tied_task_id) {
 		$query = "DELETE FROM `tasks_tied` WHERE (`task_id`=? AND `tied_task_id`=?) OR (`tied_task_id`=? AND `task_id`=?)";
-		$vars = [$task_id, $tied_task_id, $tied_task_id, $task_id];
+		$vars = [$task_id, $tied_task_id, $task_id, $tied_task_id];
 		$result = $this->Database->executeQuery($query, $vars);		
 		
 		return $result;
@@ -292,6 +292,8 @@ class Tasks extends Models {
 	}
 	
 	public function attachCommentsQty($tasks, $user_id, $from_date=null) {
+		if (!$tasks) { return false; }
+		
 		foreach ($tasks as &$task) {
 			$task->comments_qty = $this->getTaskCommentsQty($task->id, $user_id, $from_date);
 		}

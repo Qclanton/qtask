@@ -4,7 +4,7 @@ namespace Models;
 class Filters extends Models {
 	public function getTasks($params=[]) {
 		$this->loadModels(["Tasks"]);
-		$query = Tasks::TASK_QUERY_BASE . " WHERE ?";
+		$query = "SELECT " . Tasks::TASK_QUERY_BASE_SUBJECT . " FROM " . Tasks::TASK_QUERY_BASE_OBJECT  . " WHERE ?";
 		$vars = ["1"];
 		
 		if (isset($params['project'])) {

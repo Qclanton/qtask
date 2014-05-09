@@ -126,8 +126,18 @@ class Tasks extends Components {
 				$this->showComments($this->get->task_id);
 				echo $this->content['bottom'];
 				break;
-			case "getlistfortie":				
-				$tasks = $this->Tasks->getTasksList();
+			case "getlistfortie":
+					$params = [
+						'order'=>[
+							['column'=>"creation_date", 'side'=>"DESC"]
+						],
+						'limit_qty' => 10
+					];		
+				$tasks = $this->Tasks->getTasks($params);
+				break;
+			case "tie":								
+				$this->Tasks->tieTask($this->post->task_id, $this->post->tied_task_id, $this->post->depended_object);
+				break;
 			default:
 				$this->redirect($this->site_url);
 				break;
@@ -173,6 +183,7 @@ class Tasks extends Components {
 		// Attach parents and childrens info
 		$task['subtasks'] = $this->Tasks->getSubtasks($task['id']);
 		if (!empty($task['parent_task_id'])) { $task['parent_task'] = $this->Tasks->getTask($task['parent_task_id']); }
+		$task['tied_tasks'] = $this->Tasks->getTiedTasks($task['id']);
 		
 		$this->setView("components/tasks/views/task.php");
 		$this->setViewVars(['task'=>(object)$task]);

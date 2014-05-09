@@ -84,6 +84,19 @@
 				<a href="<?= $this->site_url; ?>index.php?component=tasks&action=show&id=<?= $subtask->id; ?>"><?= $subtask->title; ?></a>
 			<? } ?>
 		<? } ?>
+		
+		<!-- List of Tied Tasks -->
+		<? if (!empty($task->tied_tasks)) { ?>
+			<? foreach ($task->tied_tasks as $tied_task) { ?>
+				<? if ($tied_task->depended_object == "TASK") { ?>
+					This tasks depeneds of 
+				<? } elseif ($tied_task->depended_object == "TIED_TASK") { ?>
+					This tasks is source for
+				<? } ?>
+				
+				<a href="<?= $this->site_url; ?>index.php?component=tasks&action=show&id=<?= $tied_task->id; ?>"><?= $tied_task->title; ?></a>
+			<? } ?>
+		<? } ?>
 	
 	</div>
 	

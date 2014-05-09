@@ -82,15 +82,31 @@ class Tasks extends Models {
 			return $result;
 	}
 	
+	public function tieTask($task_id, $tied_task_id, $depended_object="NONE") {
+		$query = "INSERT INTO `tasks_tied` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `depended_object`=?";
+		$vars = [$task_id, $tied_task_id, $depended_object, $depended_object];
+		$result = $this->Database->executeQuery($query, $vars);		
+		
+		return $result;
+	}
+	
+	public function untieTask($task_id, $tied_task_id) {
+		$query = "DELETE FROM `tasks_tied` WHERE (`task_id`=? AND `tied_task_id`=?) OR (`tied_task_id`=? AND `task_id`=?)";
+		$vars = [$task_id, $tied_task_id, $tied_task_id, $task_id];
+		$result = $this->Database->executeQuery($query, $vars);		
+		
+		return $result;
+	}
 	
 	
-	const TASK_QUERY_BASE = "
-		SELECT 
+	// Select section
+	const TASK_QUERY_BASE_SUBJECT="
 			t.*,
 			p.`title` AS 'project',
 			s.`title` AS 'status',
 			s.`classes` as 'status_classes',
 			pri.`title` AS 'priority',
+			pri.`weight` AS 'priority_weight',
 			pri.`classes` AS 'priority_classes',
 			author.`name` as 'author',
 				CASE 
@@ -100,30 +116,45 @@ class Tasks extends Models {
 						(SELECT `name` FROM `users` u WHERE u. `id`=t.`assigned_id`)
 				END 
 			AS 'assigned' 
-		FROM 
+	";
+	const TASK_QUERY_BASE_OBJECT="
 			`tasks` t JOIN 
 			`projects` p ON (p.`id`=t.`project_id`) JOIN
 			`statuses` s ON (s.`id`=t.`status_id`) JOIN
 			`priorities` pri ON (pri.`id`=t.`priority_id`) JOIN 
 			`users` author ON (author.`id`=t.`author_id`)
-	";
+	";	
+	const TASK_QUERY_BASE_COLUMNS = "id|parent_task_id|project_id|status_id|priority_id|author_id|assigned_type|assigned_id|due_date|closed_date|title|text|project|status|status_classes|priority|priority_weight|priority_classes";
 	
-	public function getTasks($project_id) {
-		$query = self::TASK_QUERY_BASE . " WHERE t.`project_id`=? ORDER BY t.`due_date` DESC, pri.`id` DESC";
-		$tasks = $this->Database->getObject($query, [$project_id]);
+	
+	
+	public function getTasks($project_id=null, $params=[]) {
+		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . " WHERE ?";
+		$vars = ["1"];		
+		if (!empty($project_id)) {
+			$query .= " AND t.`project_id`=?";
+			$vars[] = $project_id;
+		}	
+	
+		$confines = $this->getConfines($params);
+		$query .= $confines['query'];
+		$vars = array_merge($vars, $confines['vars']);
+		
+		$tasks = $this->Database->getObject($query, $vars);
 		
 		return $tasks;
 	}
 	
-	public function getTask($id = null) {
-		$query = self::TASK_QUERY_BASE . " WHERE t.`id`=?";
+	
+	public function getTask($id) {
+		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . " WHERE t.`id`=?";
 		$task = $this->Database->getRow($query, [$id]);
 		
 		return $task;	
 	}
 	
 	public function getSubtasks($task_id) {
-		$query = self::TASK_QUERY_BASE . " WHERE t.`parent_task_id`=?";
+		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . " WHERE t.`parent_task_id`=?";
 		$subtasks = $this->Database->getObject($query, [$task_id]);
 		
 		return $subtasks; 
@@ -136,6 +167,57 @@ class Tasks extends Models {
 		
 		return $tasks;
 	}
+	
+	public function getTasksForTie($task_id=null, $user_id=null) {
+		$params = [
+			'order'=>[
+				['column'=>"creation_date", 'side'=>"DESC"]
+			],
+			'limit_qty' => 10
+		];
+			
+		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . " WHERE ?";
+		$vars = ["1"];
+		
+		if (!empty($task_id)) {
+			$query .= " AND t.`id`!=?";
+			$vars[] = $task_id;
+		}
+		
+		$confines = $this->getConfines($params);
+		$query .= $confines['query'];
+		$vars = array_merge($vars, $confines['vars']);
+		
+		$tasks = $this->Database->getObject($query, $vars);
+		
+		return $tasks;
+	}
+	
+	public function getTiedTasks($task_id) {
+		$query = "
+			SELECT " . 
+				self::TASK_QUERY_BASE_SUBJECT . 
+				", 				
+					CASE 
+						WHEN (tt.`task_id`=t.`id` AND tt.`depended_object`='TIED_TASK') THEN 'TASK'
+						WHEN (tt.`task_id`=t.`id` AND tt.`depended_object`='TASK') THEN 'TIED_TASK'
+						ELSE  tt.`depended_object`
+					END
+				AS 'depended_object'
+			FROM " . 
+				self::TASK_QUERY_BASE_OBJECT . " 
+			JOIN
+				`tasks_tied` tt ON (
+					(tt.`task_id`=t.`id` AND tt.`tied_task_id`=?) OR 
+					(tt.`tied_task_id`=t.`id` AND tt.`task_id`=?)
+				)
+		";
+	
+		$tied_tasks = $this->Database->getObject($query, [$task_id, $task_id]);
+		
+		return $tied_tasks;
+	}
+	
 	
 	public function getDefaultTask($user_id="1", $project_id="1") {
 		$this->loadModels(["Settings"]);

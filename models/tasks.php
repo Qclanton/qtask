@@ -84,7 +84,15 @@ class Tasks extends Models {
 	
 	public function tieTask($task_id, $tied_task_id, $depended_object="NONE") {
 		$query = "INSERT INTO `tasks_tied` VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `depended_object`=?";
-		$vars = [$task_id, $tied_task_id, $depends_task_id, $depended_object];
+		$vars = [$task_id, $tied_task_id, $depended_object, $depended_object];
+		$result = $this->Database->executeQuery($query, $vars);		
+		
+		return $result;
+	}
+	
+	public function untieTask($task_id, $tied_task_id) {
+		$query = "DELETE FROM `tasks_tied` WHERE (`task_id`=? AND `tied_task_id`=?) OR (`tied_task_id`=? AND `task_id`=?)";
+		$vars = [$task_id, $tied_task_id, $tied_task_id, $task_id];
 		$result = $this->Database->executeQuery($query, $vars);		
 		
 		return $result;
@@ -121,7 +129,7 @@ class Tasks extends Models {
 	
 	
 	public function getTasks($project_id=null, $params=[]) {
-		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . "WHERE ?";
+		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . " WHERE ?";
 		$vars = ["1"];		
 		if (!empty($project_id)) {
 			$query .= " AND t.`project_id`=?";
@@ -160,6 +168,30 @@ class Tasks extends Models {
 		return $tasks;
 	}
 	
+	public function getTasksForTie($task_id=null, $user_id=null) {
+		$params = [
+			'order'=>[
+				['column'=>"creation_date", 'side'=>"DESC"]
+			],
+			'limit_qty' => 10
+		];
+			
+		$query = "SELECT " . self::TASK_QUERY_BASE_SUBJECT . " FROM " . self::TASK_QUERY_BASE_OBJECT . " WHERE ?";
+		$vars = ["1"];
+		
+		if (!empty($task_id)) {
+			$query .= " AND t.`id`!=?";
+			$vars[] = $task_id;
+		}
+		
+		$confines = $this->getConfines($params);
+		$query .= $confines['query'];
+		$vars = array_merge($vars, $confines['vars']);
+		
+		$tasks = $this->Database->getObject($query, $vars);
+		
+		return $tasks;
+	}
 	
 	public function getTiedTasks($task_id) {
 		$query = "

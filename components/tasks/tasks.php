@@ -126,17 +126,13 @@ class Tasks extends Components {
 				$this->showComments($this->get->task_id);
 				echo $this->content['bottom'];
 				break;
-			case "getlistfortie":
-					$params = [
-						'order'=>[
-							['column'=>"creation_date", 'side'=>"DESC"]
-						],
-						'limit_qty' => 10
-					];		
-				$tasks = $this->Tasks->getTasks($params);
-				break;
 			case "tie":								
 				$this->Tasks->tieTask($this->post->task_id, $this->post->tied_task_id, $this->post->depended_object);
+				$this->redirect($this->post->redirection_url);
+				break;
+			case "untie":
+				$this->Tasks->untieTask($this->get->task_id, $this->get->tied_task_id);
+				$this->redirect($this->get->redirection_url);
 				break;
 			default:
 				$this->redirect($this->site_url);
@@ -183,10 +179,13 @@ class Tasks extends Components {
 		// Attach parents and childrens info
 		$task['subtasks'] = $this->Tasks->getSubtasks($task['id']);
 		if (!empty($task['parent_task_id'])) { $task['parent_task'] = $this->Tasks->getTask($task['parent_task_id']); }
+		
+		// Attach tied tasks and info for tie
 		$task['tied_tasks'] = $this->Tasks->getTiedTasks($task['id']);
+		$tasks_for_tie = $this->Tasks->getTasksForTie($task['id'], $this->user_id);
 		
 		$this->setView("components/tasks/views/task.php");
-		$this->setViewVars(['task'=>(object)$task]);
+		$this->setViewVars(['task'=>(object)$task, 'tasks_for_tie'=>$tasks_for_tie]);
 		
 		return true;
 	}
@@ -290,11 +289,11 @@ class Tasks extends Components {
 						'filter' => "int",
 						'error_message' => "Incorrect user id"
 					],
-					'text' => [
+					/*'text' => [
 						'filter' => "validate_regexp",
 						'regexp' => "longstring",
 						'error_message' => "Text is too long (max - 4096)"
-					],
+					],*/
 					'creation_date' => [
 						'filter' => "validate_regexp",
 						'regexp' => "date",

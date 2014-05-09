@@ -68,8 +68,8 @@ td {
 .comments  span{
 	}
 	
-#project {
-	width:69%;
+#project {/*
+	width:69%;*/
 	display:inline-block;}
 	
 #tasklist {

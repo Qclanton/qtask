@@ -13,7 +13,8 @@
 				<td>
 				<div class="project-td">
 					<h3>
-						<a href="<?= $this->site_url . 'index.php?component=projects&action=project&id=' . $project->id; ?>"><?= $project->title; ?></a>
+						<a title="<?= $project->description; ?>" href="<?= $this->site_url . 'index.php?component=projects&action=project&id=' . $project->id; ?>"><?= $project->title; ?></a>
+						
 					</h3>
 				</div>
 				</td>

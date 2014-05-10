@@ -17,7 +17,7 @@ class Breadcrumbs extends \System {
 				$html .= "<a href='$link'>$title</a>$separator";
 			}
 			else {
-				$html .="<b>$title</b>";
+				$html .="<a>$title</a>";
 			}
 		}
 		

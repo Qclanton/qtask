@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	
-	<div class="title-block"><h2>Home Page</h2></div>
+	<div class="title-block"><h2>%meta%</h2></div>
 	<div id="breadcrumbs"> 
 		<div id="breadcrumbs-wrapper">
 			%breadcrumbs%
@@ -52,6 +52,9 @@
 		<div class="content">
 			<div id="top-content">
 				%top%
+			</div>
+			<div id="right-content">
+				%right%
 			</div>
 			<div id="bottom-content">
 				%bottom%

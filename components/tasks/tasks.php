@@ -6,7 +6,8 @@ class Tasks extends Components {
 	
 	public function prepare() {
 		$this->defineUserLevel($this->name);
-		$this->loadModels(["Tasks", "Components", "Users"]);
+		$this->loadModels(["Tasks", "Components", "Users", "Projects"]);
+		$this->loadHelpers(["Breadcrumbs"]);
 	}
 	
 	public function load() {
@@ -20,7 +21,18 @@ class Tasks extends Components {
 			case "list":								
 				$this->setListContent($this->get->project_id);
 				$this->renderViewContent();
-				$this->content['top'] = $this->View->content;
+				$this->content['top'] = $this->View->content;				
+				
+				
+				$project = $this->Projects->getProject($this->get->project_id);				
+				$breadcrumbs = [
+					"Projects" => $this->site_url . "index.php?component=projects&action=list",
+					$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
+					"Task List" => ""
+				];
+				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
+				
+				
 				$this->setUserLastVisitDate($this->name);
 				break;
 			case "showsetform":
@@ -32,7 +44,23 @@ class Tasks extends Components {
 				$this->content['top'] = $this->View->content;
 				
 				// Show comments
-				if (!empty($id)) { $this->showComments($id); }				
+				if (!empty($id)) { $this->showComments($id); }
+				
+				// Breadcrumbs
+				if (empty($id)) {
+					$breadcrumbs = ["Create New Task"=>""];
+				}
+				else {
+					$task = $this->Tasks->getTask($id);
+					$project = $this->Projects->getProject($task['project_id']);
+					$breadcrumbs = [
+						"Projects" => $this->site_url . "index.php?component=projects&action=list",
+						$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
+						"Edit Task " . $task['id'] . " - " . $task['title'] => ""
+					];
+				}
+
+				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);				
 				break;
 			case "show":							
 				$result = $this->setTaskContent($this->get->id);
@@ -44,6 +72,17 @@ class Tasks extends Components {
 				$this->renderViewContent();
 				$this->content['top'] = $this->View->content;				
 				$this->showComments($this->get->id);
+				
+				// Breadcrumbs
+				$task = $this->Tasks->getTask($this->get->id);
+				$project = $this->Projects->getProject($task['project_id']);
+				$breadcrumbs_action = "Edit Task " . $task['id'] . " - " . $task['title'];;
+				$breadcrumbs = [
+					"Projects" => $this->site_url . "index.php?component=projects&action=list",
+					$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
+					$breadcrumbs_action => ""
+				];
+				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);	
 				break;
 			case "geteditform":			
 				$task = $this->Tasks->getTask($this->get->id);
@@ -69,12 +108,28 @@ class Tasks extends Components {
 					$task = $this->post;
 					
 					// Show form
-					$this->setSetformContent(null, $task);
+					$this->setTaskformContent(null, $task);
 					$this->renderViewContent();
 					$this->content['top'] = $this->View->content;
 					
 					// Show comments
 					if (!empty($id)) { $this->showComments($id); }
+					
+					// Breadcrumbs
+					if (empty($id)) {
+						$breadcrumbs_action = "Create New Task";
+					}
+					else {
+						$task = $this->Tasks->getTask($id);
+						$project = $this->Projects->getProject($task['project_id']);
+						$breadcrumbs_action = "Edit Task " . $task['id'] . " - " . $task['title'];
+					}
+					$breadcrumbs = [
+						"Projects" => $this->site_url . "index.php?component=projects&action=list",
+						$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
+						$breadcrumbs_action => ""
+					];
+					$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);	
 				}
 				break;
 			case "fastedit":
@@ -97,6 +152,14 @@ class Tasks extends Components {
 				$comment = $this->Tasks->getComment($this->post->id);
 				if (empty($this->post->id) || $this->user_level >= 900 || $this->user_id == $comment->user_id) { 
 					$this->Tasks->setComment($this->post);
+					
+					// Edit Task
+					$task = $this->Tasks->getTask($this->post->task_id);
+					$task['status_id'] = $this->post->status_id;
+					$task['assigned_type'] = $this->post->assigned_type;
+					$task['assigned_id'] = $this->post->assigned_id;
+					
+					$this->Tasks->setTask($task);
 				}
 				
 				$this->redirect($this->post->redirection_url);
@@ -363,11 +426,11 @@ class Tasks extends Components {
 				'regexp' => "shortstring",
 				'error_message' => "Title is too long (max - 255)"
 			],
-			'text' => [
+			/*'text' => [
 				'filter' => "validate_regexp",
 				'regexp' => "longstring",
 				'error_message' => "Text is too long (max - 4096)"
-			],
+			],*/
 			'assigned_type' => [
 				'filter' => "validate_regexp",
 				'options' => ['regexp' => '/(GROUP|USER)/'],

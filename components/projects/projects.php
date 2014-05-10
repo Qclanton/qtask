@@ -4,7 +4,8 @@ namespace Components;
 class Projects extends Components {
 	public function prepare() {
 		$this->defineUserLevel("Projects");
-		$this->loadModels(["Users", "Components", "Projects"]);		
+		$this->loadModels(["Users", "Components", "Projects"]);
+		$this->loadHelpers(["Breadcrumbs"]);		
 	}
 	
 	public function load() {
@@ -13,6 +14,8 @@ class Projects extends Components {
 		switch ($action) { 
 			case "list":
 				$this->setListContent();
+				$breadcrumbs = ["Projects" => ""];
+				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
 				break;
 			case "project":
 				$this->setRules($action);
@@ -30,7 +33,16 @@ class Projects extends Components {
 					$this->Tasks->setListContent($this->get->id);
 					$this->Tasks->renderViewContent();
 					$this->content['bottom'] = $this->Tasks->View->content;
-					$this->setUserLastVisitDate($this->Tasks->name);
+					
+					
+					$breadcrumbs = [
+						"Projects" => $this->site_url . "index.php?component=projects&action=list",
+						$project['title'] => ""
+					];
+					$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
+					
+					
+					$this->setUserLastVisitDate($this->Tasks->name);					
 				}
 				break;
 		}

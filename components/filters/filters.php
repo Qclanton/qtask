@@ -7,12 +7,14 @@ class Filters extends Components {
 	public function prepare() {
 		$this->defineUserLevel($this->name);
 		$this->loadModels(["Filters", "Tasks", "Projects"]);
+		$this->loadHelpers(["Breadcrumbs"]);
 	}
 	
 	public function load() {
-		$filter = (isset($this->get->filter) ? $this->get->filter : "mytasks");		
+		$filter = (isset($this->get->filter) ? $this->get->filter : "mytasks");
 		
 		switch($filter) {
+			case "showactions":			
 			case "mytasks":
 				if (empty($this->user_id)) { $this->redirect($this->site_url); }				
 			
@@ -22,6 +24,12 @@ class Filters extends Components {
 				$this->setView("components/filters/views/tasks.php", ['tasks'=>$tasks]);
 				$this->renderViewContent();
 				$this->content['top'] = $this->View->content;
+				
+				$breadcrumbs = [
+					"Filters" => $this->site_url . "index.php?component=filters&action=showactions",
+					"My Tasks" => ""
+				];
+				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
 				
 				$this->setUserLastVisitDate($filter . $this->name);	
 				break;

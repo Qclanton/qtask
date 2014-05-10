@@ -5,7 +5,7 @@
 		<img title="Edit" class="edit-icon" src="<?= $this->site_url; ?>components/tasks/views/images/edit.png"></img>
 		<span>Edit Task</span>
 	</a>
-			
+
 	<h2><?= $task->title; ?></h2>
 	<? if (!empty($task->closed_date)) { ?>
 		Closed Date = <?= $task->closed_date; ?>
@@ -89,7 +89,7 @@
 		<? if (!empty($task->tied_tasks)) { ?>
 			<? foreach ($task->tied_tasks as $tied_task) { ?>
 				<? if ($tied_task->depended_object == "TASK") { ?>
-					This tasks depeneds of 
+					This tasks depends of 
 				<? } elseif ($tied_task->depended_object == "TIED_TASK") { ?>
 					This tasks is source for
 				<? } ?>

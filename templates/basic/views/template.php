@@ -1,6 +1,8 @@
 <head>
 	<meta charset="utf-8"> 
 	<link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>templates/basic/views/style.css" />
+	<link href="<?= $this->site_url; ?>templates/basic/views/images/favicon.png" rel="shortcut icon" type="image/x-icon" />
+	<title>QTask</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
@@ -41,19 +43,19 @@
 	<div id="breadcrumbs"> 
 		<div id="breadcrumbs-wrapper">
 			%breadcrumbs%
-			<a>Some</a>
 		</div>
 	</div>
 	<div id="error">
 		%error%
 	</div>
 	<div id="main-container">
-		<div class="content"></div>
-		<div id="top-content">
-			%top%
-		</div>
-		<div id="bottom-content">
-			%bottom%
+		<div class="content">
+			<div id="top-content">
+				%top%
+			</div>
+			<div id="bottom-content">
+				%bottom%
+			</div>
 		</div>
 	</div>
 </div>

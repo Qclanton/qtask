@@ -19,20 +19,7 @@ class Tasks extends Components {
 
 		switch ($action) { 
 			case "list":								
-				$this->setListContent($this->get->project_id);
-				$this->renderViewContent();
-				$this->content['top'] = $this->View->content;				
-				
-				
-				$project = $this->Projects->getProject($this->get->project_id);				
-				$breadcrumbs = [
-					"Projects" => $this->site_url . "index.php?component=projects&action=list",
-					$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
-					"Task List" => ""
-				];
-				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
-				
-				
+				$this->setListContent($this->get->project_id);				
 				$this->setUserLastVisitDate($this->name);
 				break;
 			case "showsetform":
@@ -305,6 +292,21 @@ class Tasks extends Components {
 		];
 		
 		$this->setView("components/tasks/views/list.php", $vars);
+		$this->renderViewContent();
+		$this->content['top'] = $this->View->content;
+		
+		$this->setView("components/tasks/views/listright.php", $vars);
+		$this->renderViewContent();
+		$this->content['right'] = $this->View->content;					
+				
+				
+		$project = $this->Projects->getProject($this->get->project_id);				
+		$breadcrumbs = [
+			"Projects" => $this->site_url . "index.php?component=projects&action=list",
+			$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
+			"Task List" => ""
+		];
+		$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
 		
 		return true;
 	}	

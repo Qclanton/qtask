@@ -227,9 +227,12 @@ class Tasks extends Components {
 	
 	public function getTaskCommentsForm($task_id, $comment_id=null) {
 		$comment = (empty($comment_id) ? $this->Tasks->getDefaultComment($task_id, $this->user_id) : $this->Tasks->getComment($comment_id));
-
+		
+		$this->loadModels(["Settings"]);
+		$show_newcomment_form_fl = $this->Settings->getSetting("show_newcomment_form", "user", ['id'=>$this->user_id]);
+		
 		$this->setView("components/tasks/views/setcommentform.php");
-		$this->setViewVars(['comment'=>$comment]);
+		$this->setViewVars(['comment'=>$comment, 'show_newcomment_form_fl' => $show_newcomment_form_fl]);
 		$this->renderViewContent();
 		
 		return $this->View->content;

@@ -1,7 +1,11 @@
 <link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/setcommentform-style.css" />
 <link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/qeditor.css" />
 
-<div class="editor-content" id="editor-content--<?= $comment->id; ?>">
+<div 
+		<? if ($show_newcomment_form_fl == "NO") { echo "style='display:none;'"; } ?>
+		class="editor-content" 
+		id="editor-content--<?= $comment->id; ?>"
+	>
 	<div class="task-comment-wrapper">
 		<div class="comment-top">
 			<div class="comment-info-top">
@@ -37,7 +41,7 @@
 				<a class="editor-button-code">Code</a>
 				<a class="editor-button-bullet_list">Bullet List</a>
 				<a class="editor-button-numbered_list">Numbered List</a>
-				<a class="editor-button-result edtitor-result-opened">Result</a>
+				<a class="editor-button-result <? if ($show_newcomment_form_fl == "YES") { echo "edtitor-result-opened"; } ?>">Result</a>
 			</div>
 			
 			<textarea cols="30" rows="5" name="text" class="textarea-input editor-textarea"><?= $comment->text; ?></textarea>			

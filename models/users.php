@@ -18,7 +18,7 @@ class Users extends Models {
 	}
 	
 	public function getUser($id=null) {
-		$query = "SELECT `id`, `group_id`, `login` FROM `users` WHERE `id`=?";
+		$query = "SELECT `id`, `login`, `name` FROM `users` WHERE `id`=?";
 		$user = $this->Database->getRow($query, [$id]);
 		
 		return $user;

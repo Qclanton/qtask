@@ -333,13 +333,17 @@ class Tasks extends Models {
 	}
 	
 	public function getDefaultComment($task_id, $user_id) {
+		$this->loadModels(["Users"]);		
+		$user = $this->Users->getUser($user_id);
+
 		$comment = [
 			'id' => null,
 			'task_id' => $task_id,
 			'user_id' => $user_id,
 			'text' => "",
 			'creation_date' => date("Y-m-d H:i:s"),
-			'modification_date' => null
+			'modification_date' => null,
+			'user_name' => $user['name']
 		];
 		
 		return (object)$comment;

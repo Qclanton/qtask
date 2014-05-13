@@ -13,7 +13,7 @@
 			Closed Date = <?= $task->closed_date; ?>
 		<? } ?>
 		<div class="task-details">
-			<h3>Details:</h3>		
+			<h3>Details: </h3>		
 			
 			<table>
 				<tr>

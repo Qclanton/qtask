@@ -239,10 +239,16 @@ class Tasks extends Components {
 		
 		// Attach tied tasks and info for tie
 		$task['tied_tasks'] = $this->Tasks->getTiedTasks($task['id']);
-		$tasks_for_tie = $this->Tasks->getTasksForTie($task['id'], $this->user_id);
+		$last_created_tasks = $this->Tasks->getTasksForTie($task['id'], $this->user_id);
+		$last_watched_tasks = $this->Tasks->getLastWatchedTasks($this->user_id);
 		
+		$vars = [
+			'task' => (object)$task,
+			'last_created_tasks' => $last_created_tasks,
+			'last_watched_tasks' => $last_watched_tasks
+		];
 		$this->setView("components/tasks/views/task.php");
-		$this->setViewVars(['task'=>(object)$task, 'tasks_for_tie'=>$tasks_for_tie]);
+		$this->setViewVars($vars);
 		
 		return true;
 	}

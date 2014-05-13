@@ -254,29 +254,26 @@ class Tasks extends Models {
 		
 		return $result;
 	}
-	public function getLastWatchedTasks($user_id, $limit=10) {
-		$limit = (int)$limit;
-		
+	public function getLastWatchedTasks($user_id, $limit=10) {	
 		$query = "
-			SELECT 
-				GROUP_CONCAT(`inner`.`value` SEPARATOR ',') AS 'last_watched_tasks'
-			FROM (
-					SELECT DISTINCT
-						`value`
-					FROM 
-						`history`
-					WHERE 
-						`layout`='user' AND
-						`unique_key`='id' AND
-						`unique_value`=? AND
-						`key`='task_watch'
-					LIMIT $limit
-				) 
-				AS `inner`
+			SELECT DISTINCT
+				" . self::TASK_QUERY_BASE_SUBJECT . "
+			FROM 
+				 " . self::TASK_QUERY_BASE_OBJECT . " JOIN
+				 `history` h ON (h.`value`=t.`id`)
+			WHERE 
+				h.`layout`='user' AND
+				h.`unique_key`='id' AND
+				h.`unique_value`=? AND
+				h.`key`='task_watch'
 		";
+		$vars = [$user_id];
+		
+		$confines = $this->getConfines(['limit_qty' => (int)$limit]);
+		$query .= $confines['query'];
+		$vars = array_merge($vars, $confines['vars']);
 				
-		$tasks = $this->Database->getValue($query, [$user_id]);
-		if ($tasks) { $tasks = explode(",", $tasks); }
+		$tasks = $this->Database->getObject($query, $vars);
 		
 		return $tasks;
 	}

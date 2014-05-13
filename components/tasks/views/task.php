@@ -84,6 +84,8 @@
 				<a href="<?= $this->site_url; ?>index.php?component=tasks&action=show&id=<?= $subtask->id; ?>"><?= $subtask->title; ?></a>
 			<? } ?>
 		<? } ?>
+		<!-- End of List of subtasks -->
+		
 		
 		<!-- List of Tied Tasks -->
 		<? if (!empty($task->tied_tasks)) { ?>
@@ -98,6 +100,8 @@
 				(<a href="<?= $this->site_url; ?>index.php?component=tasks&action=untie&task_id=<?= $task->id; ?>&tied_task_id=<?= $tied_task->id; ?>&redirection_url=<?= urlencode($this->current_url); ?>">Untie</a>)
 			<? } ?>
 		<? } ?>
+		<!-- End of List of Tied Tasks -->
+		
 		
 		<!-- Tie form -->
 		<a style="cursor:pointer;" id="show-tie_task-form-button">Show Tie Form</a>
@@ -107,9 +111,16 @@
 			
 			
 			<select name="tied_task_id">
-				<? foreach ($tasks_for_tie as $task_for_tie) { ?>
-					<option value="<?= $task_for_tie->id; ?>"><?= $task_for_tie->id; ?>. <?= $task_for_tie->title; ?></option>
-				<? } ?>
+				<optgroup label="Last Watched">
+					<? foreach ($last_watched_tasks as $last_watched_task) { ?>
+						<option value="<?= $last_watched_task->id; ?>"><?= $last_watched_task->id; ?>. <?= $last_watched_task->title; ?></option>
+					<? } ?>
+				</optgroup>
+				<optgroup label="Last Created">
+					<? foreach ($last_created_tasks as $last_created_task) { ?>
+						<option value="<?= $last_created_task->id; ?>"><?= $last_created_task->id; ?>. <?= $last_created_task->title; ?></option>
+					<? } ?>
+				</optgroup>
 			</select>
 			
 			<select name="depended_object">
@@ -120,6 +131,7 @@
 			
 			<input type="submit" value="Tie"></input>
 		</form>
+		<!-- End of Tie form -->
 			
 	</div>
 	

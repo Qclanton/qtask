@@ -245,6 +245,43 @@ class Tasks extends Models {
 
 
 
+	// Last watched tasks
+	public function setLastWatchedTask($task_id, $user_id) {
+		$query = "INSERT INTO `history` VALUES(NULL, NOW(), 'user', 'id', ?, 'task_watch', ?)";
+		$vars = [$user_id, $task_id];
+		
+		$result = $this->Database->executeQuery($query, $vars);
+		
+		return $result;
+	}
+	public function getLastWatchedTasks($user_id, $limit=10) {
+		$limit = (int)$limit;
+		
+		$query = "
+			SELECT 
+				GROUP_CONCAT(`inner`.`value` SEPARATOR ',') AS 'last_watched_tasks'
+			FROM (
+					SELECT DISTINCT
+						`value`
+					FROM 
+						`history`
+					WHERE 
+						`layout`='user' AND
+						`unique_key`='id' AND
+						`unique_value`=? AND
+						`key`='task_watch'
+					LIMIT $limit
+				) 
+				AS `inner`
+		";
+				
+		$tasks = $this->Database->getValue($query, [$user_id]);
+		if ($tasks) { $tasks = explode(",", $tasks); }
+		
+		return $tasks;
+	}
+
+
 
 	// Functions for Comments
 	public function setComment($data) {

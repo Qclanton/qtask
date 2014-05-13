@@ -197,7 +197,11 @@ class Tasks extends Components {
 		$this->setTaskComments($task_id);
 		$this->renderViewContent();
 		$this->content['bottom'] = $this->View->content;
-		$this->content['bottom'] .= $comments_form;		
+		$this->content['bottom'] .= $comments_form;
+		
+		if ($this->user_id) {
+			$this->Tasks->setLastWatchedTask($task_id, $this->user_id);
+		}
 	}
 	
 	public function setTaskComments($task_id) {
@@ -271,7 +275,7 @@ class Tasks extends Components {
 		return true;
 	}
 	
-	public function setListContent($project_id) {
+	public function setListContent($project_id, $render_fl="yes") {
 		$params = [
 			'order'=>[
 				['column'=>"due_date", 'side'=>"DESC"],
@@ -291,6 +295,7 @@ class Tasks extends Components {
 			'due_critical_period' => $this->Settings->getSetting("due_critical_period", "project", ['id'=>$project_id])
 		];
 		
+
 		$this->setView("components/tasks/views/list.php", $vars);
 		$this->renderViewContent();
 		$this->content['top'] = $this->View->content;
@@ -300,13 +305,14 @@ class Tasks extends Components {
 		$this->content['right'] = $this->View->content;					
 				
 				
-		$project = $this->Projects->getProject($this->get->project_id);				
+		$project = $this->Projects->getProject($project_id);				
 		$breadcrumbs = [
 			"Projects" => $this->site_url . "index.php?component=projects&action=list",
 			$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
 			"Task List" => ""
 		];
 		$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
+		
 		
 		return true;
 	}	

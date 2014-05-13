@@ -2,7 +2,8 @@
 #task--form {
     background: none repeat scroll 0 0 #F5F5F5;
     box-shadow: 0 4px 3px #CCCCCC;
-	padding:15px;}
+	padding:15px;
+	margin-bottom: 10px;}
 	
 .edit-icon {
     vertical-align: middle;
@@ -42,6 +43,9 @@
 
 #field-title input {
 	width:75%;}
+	
+#field-text textarea {
+	width: 100%;}
 
 #task--wrapper hr {
     background: none repeat scroll 0 0 #CCCCCC;

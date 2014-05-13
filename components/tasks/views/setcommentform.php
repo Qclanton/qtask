@@ -1,4 +1,24 @@
 <link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/setcommentform-style.css" />
+<link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/qeditor.css" />
+
+<div 
+		<? if ($show_newcomment_form_fl == "NO") { echo "style='display:none;'"; } ?>
+		class="editor-content" 
+		id="editor-content--<?= $comment->id; ?>"
+	>
+	<div class="task-comment-wrapper">
+		<div class="comment-top">
+			<div class="comment-info-top">
+				<span class="detail-name">Author:</span>
+				<span class="detail-value"><?= $comment->user_name; ?></span>
+				<span class="detail-name">Commented at: </span>
+				<span class="detail-value">the future</span>
+			</div>
+		</div>
+			
+		<p></p>
+	</div>
+</div>
 
 <div class="comment-form--wrapper" id="comment-form-wrapper--<?= $comment->id; ?>">
 	<h3>Add Comment</h3>
@@ -13,26 +33,38 @@
 		Status: <div id="comments-status_id-wrapper--<?= $comment->id; ?>"><img class="loading" src="http://i.stack.imgur.com/FhHRx.gif"></img></div>
 		Assigned To: <div id="comments-assigned-wrapper--<?= $comment->id; ?>"><img class="loading" src="http://i.stack.imgur.com/FhHRx.gif"></img></div>
 		
-		<textarea cols="30" rows="5" name="text" class="textarea-input"><?= $comment->text; ?></textarea>
-		<br />
+		<div class="editor-wrapper" id="editor-wrapper--<?= $comment->id; ?>">
+			<div class="editor-toolbar">
+				<a class="editor-button-bold">Bold</a>
+				<a class="editor-button-italic">Italic</a>
+				<a class="editor-button-quote">Quote</a>
+				<a class="editor-button-code">Code</a>
+				<a class="editor-button-bullet_list">Bullet List</a>
+				<a class="editor-button-numbered_list">Numbered List</a>
+				<a class="editor-button-result <? if ($show_newcomment_form_fl == "YES") { echo "edtitor-result-opened"; } ?>">Result</a>
+			</div>
+			
+			<textarea cols="30" rows="5" name="text" class="textarea-input editor-textarea"><?= $comment->text; ?></textarea>			
+		</div>
 		<button>Set</button>
 	</form>
 </div>
-<script>
-	// Load form content
+
+<script src="<?= $this->site_url; ?>components/tasks/views/js/jquery.selection.js"></script>
+<script src="<?= $this->site_url; ?>components/tasks/views/js/qeditor.js"></script>
+<script>	
 	$(function() {
+		// Load form content
 		var getform_url = "<?= $this->site_url; ?>index.php/?load_template_fl=no&component=tasks&action=geteditform&return_url=<?= urlencode($this->current_url); ?>&id=<?= $comment->task_id; ?>";
 		
-		$("#comments-status_id-wrapper--<?= $comment->id; ?>").load(getform_url + " #field-status_id");
-				
+		$("#comments-status_id-wrapper--<?= $comment->id; ?>").load(getform_url + " #field-status_id");				
 		$("#comments-assigned-wrapper--<?= $comment->id; ?>").load(getform_url + " #field-assigned", function() {
 			// Load script for chained select
 			var url = "<?= $this->site_url; ?>components/tasks/views/js/jquery.chained.js";
 			$.getScript(url, function(){
 				$("#assigned_id").chained("#assigned_type");
 			});				
-		});
-		
+		});		
 		$(".loading").hide();
 	});
 </script>

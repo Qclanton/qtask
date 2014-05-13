@@ -19,20 +19,7 @@ class Tasks extends Components {
 
 		switch ($action) { 
 			case "list":								
-				$this->setListContent($this->get->project_id);
-				$this->renderViewContent();
-				$this->content['top'] = $this->View->content;				
-				
-				
-				$project = $this->Projects->getProject($this->get->project_id);				
-				$breadcrumbs = [
-					"Projects" => $this->site_url . "index.php?component=projects&action=list",
-					$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
-					"Task List" => ""
-				];
-				$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
-				
-				
+				$this->setListContent($this->get->project_id);				
 				$this->setUserLastVisitDate($this->name);
 				break;
 			case "showsetform":
@@ -210,7 +197,11 @@ class Tasks extends Components {
 		$this->setTaskComments($task_id);
 		$this->renderViewContent();
 		$this->content['bottom'] = $this->View->content;
-		$this->content['bottom'] .= $comments_form;		
+		$this->content['bottom'] .= $comments_form;
+		
+		if ($this->user_id) {
+			$this->Tasks->setLastWatchedTask($task_id, $this->user_id);
+		}
 	}
 	
 	public function setTaskComments($task_id) {
@@ -227,9 +218,12 @@ class Tasks extends Components {
 	
 	public function getTaskCommentsForm($task_id, $comment_id=null) {
 		$comment = (empty($comment_id) ? $this->Tasks->getDefaultComment($task_id, $this->user_id) : $this->Tasks->getComment($comment_id));
-
+		
+		$this->loadModels(["Settings"]);
+		$show_newcomment_form_fl = $this->Settings->getSetting("show_newcomment_form", "user", ['id'=>$this->user_id]);
+		
 		$this->setView("components/tasks/views/setcommentform.php");
-		$this->setViewVars(['comment'=>$comment]);
+		$this->setViewVars(['comment'=>$comment, 'show_newcomment_form_fl' => $show_newcomment_form_fl]);
 		$this->renderViewContent();
 		
 		return $this->View->content;
@@ -245,10 +239,16 @@ class Tasks extends Components {
 		
 		// Attach tied tasks and info for tie
 		$task['tied_tasks'] = $this->Tasks->getTiedTasks($task['id']);
-		$tasks_for_tie = $this->Tasks->getTasksForTie($task['id'], $this->user_id);
+		$last_created_tasks = $this->Tasks->getTasksForTie($task['id'], $this->user_id);
+		$last_watched_tasks = $this->Tasks->getLastWatchedTasks($this->user_id);
 		
+		$vars = [
+			'task' => (object)$task,
+			'last_created_tasks' => $last_created_tasks,
+			'last_watched_tasks' => $last_watched_tasks
+		];
 		$this->setView("components/tasks/views/task.php");
-		$this->setViewVars(['task'=>(object)$task, 'tasks_for_tie'=>$tasks_for_tie]);
+		$this->setViewVars($vars);
 		
 		return true;
 	}
@@ -281,7 +281,7 @@ class Tasks extends Components {
 		return true;
 	}
 	
-	public function setListContent($project_id) {
+	public function setListContent($project_id, $render_fl="yes") {
 		$params = [
 			'order'=>[
 				['column'=>"due_date", 'side'=>"DESC"],
@@ -301,7 +301,24 @@ class Tasks extends Components {
 			'due_critical_period' => $this->Settings->getSetting("due_critical_period", "project", ['id'=>$project_id])
 		];
 		
+
 		$this->setView("components/tasks/views/list.php", $vars);
+		$this->renderViewContent();
+		$this->content['top'] = $this->View->content;
+		
+		$this->setView("components/tasks/views/listright.php", $vars);
+		$this->renderViewContent();
+		$this->content['right'] = $this->View->content;					
+				
+				
+		$project = $this->Projects->getProject($project_id);				
+		$breadcrumbs = [
+			"Projects" => $this->site_url . "index.php?component=projects&action=list",
+			$project['title'] => $this->site_url . "index.php?component=projects&action=project&id=" . $project['id'],
+			"Task List" => ""
+		];
+		$this->content['breadcrumbs'] = $this->Breadcrumbs->getHtml($breadcrumbs);
+		
 		
 		return true;
 	}	

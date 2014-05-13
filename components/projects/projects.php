@@ -31,8 +31,8 @@ class Projects extends Components {
 					
 					$this->loadComponents(["Tasks"]);
 					$this->Tasks->setListContent($this->get->id);
-					$this->Tasks->renderViewContent();
-					$this->content['bottom'] = $this->Tasks->View->content;
+					$this->content['bottom'] = $this->Tasks->content['top'];
+					$this->content['right'] = $this->Tasks->content['right'];
 					
 					
 					$breadcrumbs = [

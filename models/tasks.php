@@ -245,6 +245,40 @@ class Tasks extends Models {
 
 
 
+	// Last watched tasks
+	public function setLastWatchedTask($task_id, $user_id) {
+		$query = "INSERT INTO `history` VALUES(NULL, NOW(), 'user', 'id', ?, 'task_watch', ?)";
+		$vars = [$user_id, $task_id];
+		
+		$result = $this->Database->executeQuery($query, $vars);
+		
+		return $result;
+	}
+	public function getLastWatchedTasks($user_id, $limit=10) {	
+		$query = "
+			SELECT DISTINCT
+				" . self::TASK_QUERY_BASE_SUBJECT . "
+			FROM 
+				 " . self::TASK_QUERY_BASE_OBJECT . " JOIN
+				 `history` h ON (h.`value`=t.`id`)
+			WHERE 
+				h.`layout`='user' AND
+				h.`unique_key`='id' AND
+				h.`unique_value`=? AND
+				h.`key`='task_watch'
+		";
+		$vars = [$user_id];
+		
+		$confines = $this->getConfines(['limit_qty' => (int)$limit]);
+		$query .= $confines['query'];
+		$vars = array_merge($vars, $confines['vars']);
+				
+		$tasks = $this->Database->getObject($query, $vars);
+		
+		return $tasks;
+	}
+
+
 
 	// Functions for Comments
 	public function setComment($data) {
@@ -333,13 +367,17 @@ class Tasks extends Models {
 	}
 	
 	public function getDefaultComment($task_id, $user_id) {
+		$this->loadModels(["Users"]);		
+		$user = $this->Users->getUser($user_id);
+
 		$comment = [
 			'id' => null,
 			'task_id' => $task_id,
 			'user_id' => $user_id,
 			'text' => "",
 			'creation_date' => date("Y-m-d H:i:s"),
-			'modification_date' => null
+			'modification_date' => null,
+			'user_name' => $user['name']
 		];
 		
 		return (object)$comment;

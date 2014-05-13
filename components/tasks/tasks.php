@@ -235,7 +235,10 @@ class Tasks extends Components {
 		
 		// Attach parents and childrens info
 		$task['subtasks'] = $this->Tasks->getSubtasks($task['id']);
-		if (!empty($task['parent_task_id'])) { $task['parent_task'] = $this->Tasks->getTask($task['parent_task_id']); }
+		if (!empty($task['parent_task_id'])) { 
+			$task['parent_task'] = $this->Tasks->getTask($task['parent_task_id']);
+			$task['parent_task'] = (object)$task['parent_task'];
+		}
 		
 		// Attach tied tasks and info for tie
 		$task['tied_tasks'] = $this->Tasks->getTiedTasks($task['id']);

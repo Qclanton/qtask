@@ -1,0 +1,47 @@
+.task-table {
+    background: none repeat scroll 0 0 #F5F5F5;
+    border: 1px solid #F5F5F5;
+    border-radius: 10px;
+    box-shadow: 0 4px 3px #CCCCCC;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.task-table th {
+    font-size: 16px;
+    font-weight: normal;
+    text-align: left;
+    text-align: center;
+}
+
+.tbody-content {
+	background: none repeat scroll 0 0 #FFFFFF;}
+	
+.tbody-content tr{
+	border-bottom: 1px solid #F5F5F5;
+	-webkit-box-shadow: 0px 10px 5px -7px rgba(245,245,245,1);
+	-moz-box-shadow: 0px 10px 5px -7px rgba(245,245,245,1);
+	box-shadow: 0px 10px 5px -7px rgba(245,245,245,1);	
+	border-collapse:collapse;}
+	
+.tbody-content td {
+	border-bottom:1px solid #F5F5F5;}
+	
+.tbody-content a, span, p, tr, td, th, ol, ul, li{
+    color: #5B5B5B;
+    font-size: 13px;
+    font-weight: normal;
+	text-decoration:none;
+	text-align: center;
+}
+
+.task-edit-property-button {
+	cursor: pointer;
+	}
+	
+.task-edit-property-td {
+    border-right: 1px solid #F5F5F5;
+    padding: 0 8px;}
+
+.comments-qty {
+	color:#33CC66;}

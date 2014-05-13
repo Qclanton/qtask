@@ -8,7 +8,7 @@
 
 td {
 	vertical-align:top;
-	max-width: 150px;}
+	max-width: 120px;}
 
 .table-header {
 	}
@@ -54,7 +54,6 @@ td {
 	background:none repeat scroll 0 0 #FFCBC4;}
 	
 
-	
 .comments {
     background: none repeat scroll 0 0 #5B5B5B;
     border-radius: 50%;
@@ -62,6 +61,7 @@ td {
     display: inline-table;
     font-size: 13px;
     margin-top: 10px;
+    max-width: 10px;
     padding: 5px 9px;
     width: 5%;}
 

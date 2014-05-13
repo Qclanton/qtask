@@ -96,7 +96,10 @@
 	background:linear-gradient(#FCFCFC, #EEEEEE);
 	text-decoration:none;
 	color:#5B5B5B;}
-	
+
+
+.task-comment-edit:hover,
+.task-comment-delete:hover,	
 .subtask-button:hover {
 	-webkit-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
 	-moz-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);

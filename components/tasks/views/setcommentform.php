@@ -46,7 +46,10 @@
 			
 			<textarea cols="30" rows="5" name="text" class="textarea-input editor-textarea"><?= $comment->text; ?></textarea>			
 		</div>
-		<button>Set</button>
+		<button class="set-button">
+			<img title="Set" class="set-icon" src="<?= $this->site_url; ?>components/tasks/views/images/set.png"></img>
+			<span>Set</span>
+		</button>
 	</form>
 </div>
 

@@ -12,3 +12,27 @@
     width: 100%;
 	overflow-y: scroll;
 }
+
+.set-button {
+    background: linear-gradient(#FCFCFC, #EEEEEE) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    color: #5B5B5B;
+    margin: 5px 0;
+    padding: 5px;
+    text-decoration: none;
+	cursor:pointer;}
+	
+.set-button:hover {
+	-webkit-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	-moz-box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	box-shadow: inset 0px 0px 12px 0px rgba(204,204,204,1);
+	}
+	
+.set-icon {
+	height:25px;
+	vertical-align:sub;}
+	
+.set-button span{ 
+    padding: 10px;
+    vertical-align: baseline;}

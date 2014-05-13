@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/task-style.css" />
+<link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/tasks/views/css/setcommentform-style.css" />
 <div id="task--form">
 	<form action="<?= $this->site_url; ?>index.php?component=tasks&action=set" method="post">
 		<input type="hidden" name="id" value="<?= $task->id; ?>"></input>
@@ -7,7 +8,7 @@
 		<input type="hidden" name="creation_date" value="<?= $task->creation_date; ?>"></input>
 		<input type="hidden" name="closed_date" value="<?= $task->closed_date; ?>"></input>
 		
-		<h2>Title: <div id="field-title"><input type="text" name="title" value="<?= $task->title; ?>"></input></div><h2>
+		<h2>Title:</h2> <div id="field-title"><input type="text" name="title" value="<?= $task->title; ?>"></input></div>
 
 		<? if (!empty($task->closed_date)) { ?>
 			Closed Date = <?= $task->closed_date; ?>
@@ -131,7 +132,10 @@
 			<div id="field-text"><textarea cols="30" rows="5" name="text" class="textarea-input"><?= $task->text; ?></textarea></div>
 		</div>
 
-		<button>Set</button>
+		<button class="set-button">
+			<img title="Set" class="set-icon" src="<?= $this->site_url; ?>components/tasks/views/images/set.png"></img>
+			<span>Set</span>
+		</button>
 	</form>	
 </div>
 <script src="<?= $this->site_url; ?>components/tasks/views/js/jquery.chained.js"></script>

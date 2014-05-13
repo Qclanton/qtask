@@ -38,6 +38,7 @@
 			
 			$("#task-comment-wrapper--" + id).load( "<?= $this->site_url; ?>index.php/?load_template_fl=no&component=tasks&action=getcommentform&task_id=<?= $task_id; ?>&comment_id=" + id, function() {
 				$("#task-comment-wrapper--" + id + " input[name='redirection_url']").val("<?= $this->current_url; ?>");
+				// alert(id);
 				$("#comment-form-wrapper--" + id + " h3").html("Edit Comment");
 			});
 		});

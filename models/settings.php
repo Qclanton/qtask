@@ -43,7 +43,7 @@ class Settings extends Models {
 		return $settings;
 	}
 	
-	public function getSetting($key, $layout, $unique=[]) {
+	public function getSetting($key, $layout, $unique=[], $json_assoc_fl='no') {
 		$unformatted_setting=[];
 		$query_base = "SELECT * FROM `settings` WHERE `key`=? AND `layout`=?";
 		$vars_base = [$key, $layout];
@@ -63,9 +63,32 @@ class Settings extends Models {
 			$unformatted_setting = $this->Database->getRow($query, $vars);
 		}
 		
-		
-		$setting = ($unformatted_setting['json_fl'] == "NO" ? $unformatted_setting['value'] : json_decode($unformatted_setting['value'])); 
+		$json_assoc = ($json_assoc_fl == 'yes' ? true : false);
+		$setting = ($unformatted_setting['json_fl'] == "NO" ? $unformatted_setting['value'] : json_decode($unformatted_setting['value'], $json_assoc)); 
 		
 		return $setting;
+	}
+	
+	public function setSetting($setting) {		
+		$query = "
+			INSERT INTO `settings` VALUES (?, ?, ?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE `value`=?, `json_fl`=?
+		";
+		$vars = [
+			$setting['id'],
+			$setting['layout'],
+			$setting['unique_key'],
+			$setting['unique_value'],
+			$setting['key'],
+			$setting['value'],
+			$setting['json_fl'],
+			
+			$setting['value'],
+			$setting['json_fl']		
+		];
+		
+		$result = $this->Database->executeQuery($query, $vars);
+
+		return $result;
 	}
 }

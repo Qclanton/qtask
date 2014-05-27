@@ -2,7 +2,7 @@
 namespace Components;
 
 class Components extends \System {
-	public $content = [];
+	public $content = ['head'=>''];
 	public $user_level;
 	protected $rules = [];
 	protected $necessary_vars;
@@ -65,6 +65,22 @@ class Components extends \System {
 		$date = (isset($_COOKIE[$layout . '_last_visit_date']) ? $_COOKIE[$layout . '_last_visit_date'] : null);
 		
 		return $date;
+	}
+	
+	protected function uploadImage() {
+		$this->loadHelpers(['Uploader']);
+		$this->Uploader->allowed_extensions = ['png', 'jpg', 'gif'];		
+		if(!file_exists('uploads/user_' . $this->user_id)) { mkdir('uploads/user_' . $this->user_id); }
+		$this->Uploader->path = 'uploads/user_' . $this->user_id;
+		
+		$result = $this->Uploader->upload();
+		
+		if ($result) {
+			$this->loadModels(['Users']);
+			$this->Users->saveUnattachedImages($this->user_id, $this->Uploader->uploaded_files);
+		}
+		
+		return $result;  
 	}		
 }
 ?>

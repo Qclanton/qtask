@@ -15,6 +15,7 @@ class Database {
 		}
 		else {
 			$this->setConnection($connection);
+			$this->executeQuery(" SET NAMES 'UTF8' ");
 			$result = true;
 		}
 		

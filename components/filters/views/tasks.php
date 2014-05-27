@@ -1,12 +1,26 @@
-<link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>components/filters/views/css/style.css" />
-<script src="<?= $this->site_url; ?>components/filters/views/js/jquery.sortcolums.js"></script>
-
+<?
+	$this->content['head'] .= '<link rel="stylesheet" type="text/css" href="' . $this->site_url . 'components/filters/views/css/style.css" />';
+	$this->content['head'] .= '<script src="' . $this->site_url . 'static/js/jquery.cookie.js"></script>';
+?>
 <div id="filter-1-wrapper">
-<? if (empty($tasks)) { ?><div id="no-content">There is no tasks</div> <? } else { ?>
+<? if (empty($tasks)) { ?><div id="no-content">There is no tasks</div> <? } else { ?>	
+
+<a href="<?= $this->current_url; ?>&show_closed_fl=yes">Показывать закрытые задачи</a>
+<? foreach ($projects as $project) { ?>
+	<h3 
+			class="project-title <? if ($project->hidden_fl != 'yes') { echo 'opened'; } ?>"
+			id="project-title--<?= $project->id; ?>"
+		>
+		<?= $project->title; ?>(<?= $project->tasks_qty; ?>)
+	</h3>
 	
-	<a style="cursor: pointer;" id="sort-cols">Sort Columns</a>
-	
-	<table cellspacing="0" cellpadding="5" class="task-table">
+	<table 
+			<? if ($project->hidden_fl == 'yes') { echo 'style="display:none;"'; } ?> 
+			cellspacing="0" 
+			cellpadding="5" 
+			class="task-table"
+			id="task-table--<?= $project->id; ?>"
+		>
 		<thead class="table-header">
 			<tr class="tasks-table-header">			
 					<th id="col-ordering-position--0" class="sortable">Title</th>
@@ -24,12 +38,12 @@
 					<th id="col-ordering-position--12" class="sortable">Author</th>
 					<th id="col-ordering-position--13" class="sortable">Project</th>
 					<th id="col-ordering-position--14"></th>
-					<th id="col-ordering-position--15" class="sortable">Closed Date</th>
-					
+					<th id="col-ordering-position--15" class="sortable">Closed Date</th>					
 			</tr>
 		</thead>
 		<tbody class="tbody-content">
-			<? foreach ($tasks as $task) { ?>				
+			<? foreach ($tasks as $task) { ?>
+			<? if ($task->project_id == $project->id) { ?>					
 				<tr>					
 					<td>
 						<div id="title-wrapper--<?= $task->id; ?>">
@@ -54,188 +68,101 @@
 					<td><div id="due_date-wrapper--<?= $task->id; ?>"><?= (!empty($task->due_date) ? $task->due_date : "&#8734"); ?></td>
 					<td class="task-edit-property-td"><a class="task-edit-property-button" id="task-edit-property-button--<?= $task->id; ?>--due_date--input">&#9660;</a></td>					
 					<td><div id="assigned-wrapper--<?= $task->id; ?>"><?= ucfirst(strtolower($task->assigned_type)); ?> <?= $task->assigned; ?></div></td>
-					<td class="task-edit-property-td"><a class="task-edit-property-button" id="task-edit-property-button--<?= $task->id; ?>--assigned--multiselect">&#9660;</a></td>
+					<td class="task-edit-property-td"><a class="task-edit-property-button" id="task-edit-property-button--<?= $task->id; ?>--assigned--chainedselect">&#9660;</a></td>
 					<td class="task-edit-property-td"><?= $task->author; ?></td>
 					<td><div id="project_id-wrapper--<?= $task->id; ?>"><?= $task->project; ?></td>
 					<td class="task-edit-property-td"><a class="task-edit-property-button" id="task-edit-property-button--<?= $task->id; ?>--project_id--select">&#9660;</a></td>
 					<td><?= (!empty($task->closed_date) ? $task->closed_date : "&#8734"); ?></td>				
 				</tr>
 			<? } ?>
+			<? } ?>
 		</tbody>
 	</table>
+<? } ?>
 	
 <? } ?>
 </div>
 <script>
 	$(function() {		
-		$(".task-edit-property-button").on("click", function() {
-			var attrs =  $(this).attr('id').split("--");
+		$('.task-edit-property-button').on('click', function() {
+			var attrs =  $(this).attr('id').split('--');
 			var id = attrs[1];
 			var property = attrs[2];
 			var type = attrs[3];
-			var getform_url = "<?= $this->site_url; ?>index.php/?load_template_fl=no&component=tasks&action=geteditform&return_url=<?= urlencode($this->current_url); ?>&id=" + id;
-			var action_url = "<?= $this->site_url; ?>index.php/?component=tasks&action=fastedit&property=" + property + "&id=" + id + "&redirection_url=<?= urlencode($this->current_url); ?>";
+			var getform_url = '<?= $this->site_url; ?>index.php/?load_template_fl=no&component=tasks&action=geteditform&return_url=<?= urlencode($this->current_url); ?>&id=' + id;
+			var action_url = '<?= $this->site_url; ?>index.php/?component=tasks&action=fastedit&property=' + property + '&id=' + id + '&redirection_url=<?= urlencode($this->current_url); ?>';
 			
 			
 			// Include form 
-			$("#" + property + "-wrapper--" + id).html("<form action='" + action_url + "' method='post'><img class='loading' src='http://i.stack.imgur.com/FhHRx.gif'></img></form>");
+			$('#' + property + '-wrapper--' + id).html('<form action="' + action_url + '" method="post"><img class="loading" src="<?= $this->site_url; ?>static/images/loading.gif"></img></form>');
 			
 			// Load form content
-			$("#" + property + "-wrapper--" + id + " form").load(getform_url + " #field-" + property, function() {
-				if (type == "input" || type == "multiselect") {
+			$('#' + property + '-wrapper--' + id + ' form').load(getform_url + ' #field-' + property, function() {
+				if (type == 'input' || type == 'chainedselect') {
 					// Load script for chained select
-					if (property == "assigned") {
-						var url = "<?= $this->site_url; ?>components/tasks/views/js/jquery.chained.js";
+					if (property == 'assigned') {
+						var url = '<?= $this->site_url; ?>static/js/jquery.chained.js';
 						$.getScript(url, function(){
-							$("#assigned_id").chained("#assigned_type");
+							$('#assigned_id').chained('#assigned_type');
 						});
 					}
 					
-					$("#" + property + "-wrapper--" + id + " form").append("<button>Save</button>");				
+					$('#' + property + '-wrapper--' + id + ' form').append('<button>Save</button>');				
 				}
-				else if (type == "select") {
-					$("#" + property + "-wrapper--" + id + " form select[name=" + property + "]").on("change", function() {
-						$("#" + property + "-wrapper--" + id + " form").submit();
+				else if (type == 'select') {
+					$('#' + property + '-wrapper--' + id + ' form select[name=' + property + ']').on('change', function() {
+						$('#' + property + '-wrapper--' + id + ' form').submit();
 					});
 				}
 				
 				// Hide loading gif
-				$(".loading").hide();
+				$('.loading').hide();
 			});
 		});
 	});	
 </script>
 <script>
-	$(function() {
-		$(".comments-qty").on("click", function() {
-			var id = $(this).attr('id').split("--")[1];
+	$(function() {	
+		$('.project-title').on('click', function() {
+			var id = $(this).attr('id').split('--')[1];
+			var cookie_name = 'Settings-Filters-mytask_hidden_projects';				
+			var hidden_projects = ((typeof $.cookie(cookie_name) != 'undefined') ? $.cookie(cookie_name) : '');
 			
-			$("#comments-task--" + id + " .comments-content-wrapper").load( "<?= $this->site_url; ?>index.php/?load_template_fl=no&component=tasks&action=getfastcomments&return_url=<?= urlencode($this->current_url); ?>&task_id=" + id, function() {
-				$("#comments-task--" + id + " .comments-content-wrapper").show();
-			});
-		});
-	});	
-</script>
-<script>
-	$(function() {
-		// FUNCTION FROM HELL FOR SORT COLUMNS
-		// TODO: REMOVE ARROWS FROM THE LAST ELEMENTS
-		
-		$("#sort-cols").on("click", function() {
-			var sortable_columns = $(".task-table .tasks-table-header th.sortable");
-			
-			if ($(this).hasClass('sorting')) {				
-				$.each(sortable_columns, function() {
-					var column_title = $(this).children('a.move-right').attr('id').split("--")[1];
-					
-					$(this).html(column_title);
-				});
+			if ($(this).hasClass('opened')) {
+				// Hide Table
+				$('#task-table--' + id).hide('fast');
 				
-				$(this).removeClass('sorting');				
+				// Save setting in cookie
+				if ($.inArray(id, hidden_projects.split(',')) == -1)	{		
+					var cookie_value = ((hidden_projects != '') ? (hidden_projects + ',' + id) : id);				
+					$.cookie(cookie_name, cookie_value, { expires: 7 });
+				}
+				
+				// Remove marker-class
+				$(this).removeClass('opened');
 			}
 			else {
-				// Make arrows			
-				$.each(sortable_columns, function() {
-					var column_title = $(this).html();
-					$(this).prepend("<a class='move-left' id='column--" + column_title + "'>&#8678;</a>");
-					$(this).append("<a class='move-right' id='column--" + column_title + "'>&#8680;</a>");
-				});
+				// Show table
+				$('#task-table--' + id).show('fast');
 				
-				$(this).addClass('sorting');
-				
-				
-				// Make handlers
-				$(".move-right").on("click", function() {
-					// Define postiton
-					var position = $(this).parent().attr("id").split("--")[1]*1;
-					var step = 1;
-					var has_toggle_fl = "no";
-					
-					if (!$(this).parent().next().hasClass("sortable")) {
-						has_toggle_fl = "yes";
-					}
-					
-					if (!$(this).parent().next().next().next().hasClass("sortable") || (!$(this).parent().next().next().hasClass("sortable") && has_toggle_fl == "no")) {
-						step++;
-					}
-					
-					// Move depends col if it necessary
-					if (has_toggle_fl == "yes") {
-						var depends_col = $(this).parent().next();
-						var depends_col_position = position + 1;
-						var depends_col_next_position = depends_col_position + step;
-						
-						depends_col.attr("id", "col-ordering-position--" + depends_col_next_position);
-						depends_col.next().attr("id", "col-ordering-position--" + depends_col_position);
-						
-						$.moveColumn($(".task-table"), depends_col_position, depends_col_position + step);
-					}
-					
-					
-					// Move main col
-					$.moveColumn($(".task-table"), position, position + step);
-					
+				// Remove hidden project from settings
+				if (hidden_projects != '') {
+					var hidden_projects_arr = hidden_projects.split(',');					
 
-					// Set new ids
-					next_position = position + step;
-					$(this).parent().attr("id", "col-ordering-position--" + next_position);					
-					if (step == 1) {
-						$(this).parent().prev().attr("id", "col-ordering-position--" + position);
+					for (i=0; i<hidden_projects_arr.length; i++) {
+						if (hidden_projects_arr[i] == id) {
+							hidden_projects_arr.splice(i, 1);
+						}
 					}
-					if (step == 2) {
-						$(this).parent().prev().prev().attr("id", "col-ordering-position--" + position);
-						$(this).parent().prev().attr("id", "col-ordering-position--" + (position + 1));
-					}
-				});
+					
+					// Resave setting in cookie
+					var cookie_value = hidden_projects_arr.join(',');
+					$.cookie(cookie_name, cookie_value, { expires: 7 });
+				}
 				
-				$(".move-left").on("click", function() {
-					// Define postiton
-					var position = $(this).parent().attr("id").split("--")[1]*1;
-					var step = 1;
-					
-					if (!$(this).parent().prev().hasClass("sortable")) {
-						step++;
-					}
-					
-					var has_toggle_fl = "no";
-					if (!$(this).parent().next().hasClass("sortable") && $(this).parent().next().val() == "") {
-						var has_toggle_fl = "yes";
-						var depends_col = $(this).parent().next();
-						var depends_col_position = position + 1;
-					}
-					
-					// Move main col
-					$.moveColumn($(".task-table"), position, position - step);
-					
-					// Move depends col if it necessary
-					if (has_toggle_fl == "yes") {
-						var depends_col_prev_position = (depends_col_position - step);
-						
-						depends_col.attr("id", "col-ordering-position--" + depends_col_prev_position);
-						$.moveColumn($(".task-table"), depends_col_position, depends_col_prev_position);
-						
-					}
-					
-
-					// Set new ids
-					$(this).parent().attr("id", "col-ordering-position--" + (position - step));	
-					alert("Step: " + step + "; Fl: " + has_toggle_fl);			
-					if (step == 1 && has_toggle_fl=="no") {
-						$(this).parent().next().attr("id", "col-ordering-position--" + position);
-					}
-					else if (step == 2 && has_toggle_fl=="no") {
-						$(this).parent().next().attr("id", "col-ordering-position--" + (position-1));
-						$(this).parent().next().next().attr("id", "col-ordering-position--" + (position));
-					}
-					else if (step == 1 && has_toggle_fl=="yes") {
-						$(this).parent().next().next().attr("id", "col-ordering-position--" + (position+1));
-					}
-					if (step == 2 && has_toggle_fl=="yes") {
-						$(this).parent().next().next().attr("id", "col-ordering-position--" + (position));
-						$(this).parent().next().next().next().attr("id", "col-ordering-position--" + (position+1));;
-					}
-				});					
+				// Add marker-class
+				$(this).addClass('opened');	
 			}
-		});		
+		});
 	});
 </script>

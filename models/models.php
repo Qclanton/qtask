@@ -51,5 +51,9 @@ class Models extends \System {
 			'vars'	=> $vars
 		];
 	}
+	
+	public function getFoundRows() {
+		return $this->Database->getValue("SELECT FOUND_ROWS()");
+	}
 }
 ?>

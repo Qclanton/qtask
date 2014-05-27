@@ -1,9 +1,10 @@
 <head>
-	<meta charset="utf-8"> 
+	<meta charset="utf-8">
+	<title>QTask</title>
 	<link rel="stylesheet" type="text/css" href="<?= $this->site_url; ?>templates/basic/views/style.css" />
 	<link href="<?= $this->site_url; ?>templates/basic/views/images/favicon.png" rel="shortcut icon" type="image/x-icon" />
-	<title>QTask</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	%head%	
 </head>
 <body>
 <div id="fixed-block">

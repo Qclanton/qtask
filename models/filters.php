@@ -55,7 +55,12 @@ class Filters extends Models {
 			$query .=  " AND t.`text` " . $params['text']['comparsion_sign'] . " ?";
 			$vars[] = $params['text']['value'];
 		}
-				
+		
+		if (isset($params['confines'])) {
+			$confines = $this->getConfines($params['confines']);
+			$query .= $confines['query'];
+			$vars = array_merge($vars, $confines['vars']);		
+		}
 		
 		$result = $this->Database->getObject($query, $vars);
 

@@ -2,9 +2,45 @@
 namespace Models;
  
 class Projects extends Models {
-	public function getProjects() {
-		$query = "SELECT * FROM `projects`";
-		$projects = $this->Database->getObject($query);
+	const PROJECT_QUERY_BASE_SUBJECT="
+		p.*
+	";
+	const PROJECT_QUERY_BASE_OBJECT="
+		`projects` p
+	";
+	
+		
+	public function getProjects($user_id=null, $count_only_opened_fl = 'no') {
+		$query = "SELECT " . self::PROJECT_QUERY_BASE_SUBJECT . " FROM " . self::PROJECT_QUERY_BASE_OBJECT . " WHERE ?";
+		$vars = ['1'];
+		
+		if ($user_id) {
+			// $statuses_confines = ($tasks_statuses ? " AND t.`status_id` IN (" . implode(',', $tasks_statuses) . ")" : "");
+			/*if ($count_only_opened_fl == 'yes') {
+				$status_object = "
+					`projects_statuses` ps ON (ps.`project_id`=p.`id`) JOIN
+					`statuses` s ON (s.`id`=ps.`status_id`)
+				";
+				$tasks_statuses_confines = ""
+			}*/
+			
+			
+			
+			$query = "
+				SELECT " 
+					. self::PROJECT_QUERY_BASE_SUBJECT . ",
+					COUNT(t.`id`) AS 'tasks_qty'
+				FROM " . 
+					self::PROJECT_QUERY_BASE_OBJECT . " JOIN
+					`tasks` t ON (t.`project_id`=p.`id` $statuses_confines)
+				WHERE ?
+				AND t.`assigned_id`=?
+				GROUP BY p.`id`
+			";
+			$vars[] = $user_id;
+		}
+		
+		$projects = $this->Database->getObject($query, $vars);
 		
 		return $projects;
 	}
@@ -39,8 +75,6 @@ class Projects extends Models {
 		$priorities = $this->Database->getObject($query, [$project_id]);
 		
 		return $priorities;
-	}
-	
-	
+	}	
 }
 ?>

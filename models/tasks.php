@@ -4,17 +4,24 @@ namespace Models;
 class Tasks extends Models {
 	
 	public function setTask($data) {
-		$this->loadModels(["Settings"]);
+		$this->loadModels(['Projects']);
 		
 		$task = (object)$data;
-		$settings = $this->Settings->getSettings('project', ['id'=>$task->project_id]);
-		$task = $this->nullValues($task, ["id", "parent_task_id", "due_date", "closed_date"]);
+		$task = $this->nullValues($task, ['id', 'parent_task_id', 'due_date', 'closed_date']);
 		
-		if (in_array($task->status_id, $settings->closed_statuses)) {
-			$task->closed_date = date("Y-m-d H:i:s");
+		$closed_statuses_data = $this->Projects->getStatuses($task->project_id, 'YES');
+		$closed_statuses = [];
+		if ($closed_statuses_data) {
+			foreach ($closed_statuses_data as $closed_status_data) {
+				$closed_statuses[] = $closed_status_data->id;
+			}
+		}
+		
+		if (in_array($task->status_id, $closed_statuses)) {
+			$task->closed_date = date('Y-m-d H:i:s');
 		}
 		if ($task->id == null) {
-			$task->creation_date = date("Y-m-d H:i:s");
+			$task->creation_date = date('Y-m-d H:i:s');
 		}
 
 		$query = "

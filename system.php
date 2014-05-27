@@ -10,7 +10,7 @@ class System {
 	public $View;
 	
 	public function __construct() {
-		$this->setSeiteUrl();
+		$this->setSiteUrl();
 		$this->setCurrentUrl();
 	}
 	
@@ -21,7 +21,7 @@ class System {
 		}
 	}
 
-	private function setSeiteUrl() {
+	private function setSiteUrl() {
 		$protocol = ($_SERVER['HTTPS'] === "off" || empty($_SERVER['HTTPS']) ? "http://" : "https://");
 		$name = $_SERVER['SERVER_NAME'];
 		$path = strstr($_SERVER['PHP_SELF'], "index.php", true);		
@@ -46,10 +46,16 @@ class System {
 		return $converted_string;
 	}
 	
-	public function redirect($url) {
-		header("Location: " . $url, true, 302);
+	public function convertToCamelCase($string) {
+		$converted_string = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
+		
+		return $converted_string;
 	}
 	
+	public function redirect($url) {
+		header('Location: ' . $url, true, 302);
+	}
+
 	
 	// Functions with View
 	protected function setView($path, $vars=[]) {

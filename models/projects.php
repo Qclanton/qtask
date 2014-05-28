@@ -11,34 +11,24 @@ class Projects extends Models {
 	
 		
 	public function getProjects($user_id=null, $count_only_opened_fl = 'no') {
-		$query = "SELECT " . self::PROJECT_QUERY_BASE_SUBJECT . " FROM " . self::PROJECT_QUERY_BASE_OBJECT . " WHERE ?";
-		$vars = ['1'];
-		
 		if ($user_id) {
-			// $statuses_confines = ($tasks_statuses ? " AND t.`status_id` IN (" . implode(',', $tasks_statuses) . ")" : "");
-			/*if ($count_only_opened_fl == 'yes') {
-				$status_object = "
-					`projects_statuses` ps ON (ps.`project_id`=p.`id`) JOIN
-					`statuses` s ON (s.`id`=ps.`status_id`)
-				";
-				$tasks_statuses_confines = ""
-			}*/
-			
-			
-			
-			$query = "
-				SELECT " 
-					. self::PROJECT_QUERY_BASE_SUBJECT . ",
-					COUNT(t.`id`) AS 'tasks_qty'
-				FROM " . 
-					self::PROJECT_QUERY_BASE_OBJECT . " JOIN
-					`tasks` t ON (t.`project_id`=p.`id` $statuses_confines)
-				WHERE ?
-				AND t.`assigned_id`=?
-				GROUP BY p.`id`
-			";
-			$vars[] = $user_id;
+			$qty_task_query_part = ", (";
+			$qty_task_query_part .= "SELECT COUNT(t.`id`) FROM `tasks` t WHERE t.`project_id`=p.`id`";
+			if ($count_only_opened_fl == 'yes') {
+				$opened_statuses = $this->getStatuses(null, 'NO', 'yes');
+				$qty_task_query_part .= " AND t.`status_id` IN (" . implode(',', $opened_statuses) . ")";
+			}
+			$qty_task_query_part .= "  AND `assigned_id`=?";
+			$qty_task_query_part .= ") AS 'tasks_qty'";
+		} 
+		else {
+			$qty_task_query_part = "";
 		}
+		
+		$vars = [];
+		$query = "SELECT " . self::PROJECT_QUERY_BASE_SUBJECT . $qty_task_query_part . " FROM " . self::PROJECT_QUERY_BASE_OBJECT . " WHERE ?";
+		if ($user_id) { $vars[] = $user_id; }
+		$vars[] = '1';		
 		
 		$projects = $this->Database->getObject($query, $vars);
 		
@@ -52,7 +42,7 @@ class Projects extends Models {
 		return $project;
 	}
 	
-	public function getStatuses($project_id=null, $closed_fl=null) {
+	public function getStatuses($project_id=null, $closed_fl=null, $simple_arr_fl='no') {
 		$query = "SELECT s.* FROM `projects_statuses` ps JOIN `statuses` s ON (s.`id`=ps.`status_id`) WHERE ?";
 		$vars = ["1"];
 		
@@ -65,7 +55,19 @@ class Projects extends Models {
 			$vars[] = $closed_fl;
 		}
 		
-		$statuses = $this->Database->getObject($query, $vars);
+		$statuses_data = $this->Database->getObject($query, $vars);
+		
+		// Convert to array if it necessary
+		if ($statuses_data && $simple_arr_fl == 'yes') {
+			$statuses = [];
+			foreach ($statuses_data as $status_data) {
+				$statuses[] = $status_data->id;
+			}
+		}
+		else {
+			$statuses = $statuses_data;
+		}
+		
 		
 		return $statuses;
 	}

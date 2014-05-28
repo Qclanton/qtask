@@ -48,9 +48,8 @@ class Filters extends Components {
 				// Set cookie
 				setcookie('Settings-Filters-mytask_hidden_projects', implode(',', $hidden_projects), time()+604800);
 				
-				// Get Projects 
-				// $statuses = $this->Projects->getStatuses();
-				$projects = $this->Projects->getProjects($this->user_id);
+				// Get Projects
+				$projects = $this->Projects->getProjects($this->user_id, ($show_closed_fl == 'no' ? 'yes' : 'no'));
 				foreach ($projects as &$project) {
 					$project->hidden_fl = (in_array($project->id, $hidden_projects) ? 'yes' : 'no');					
 				}

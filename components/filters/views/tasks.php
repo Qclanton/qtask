@@ -7,11 +7,12 @@
 
 <a href="<?= $this->current_url; ?>&show_closed_fl=yes">Показывать закрытые задачи</a>
 <? foreach ($projects as $project) { ?>
+<? if ($project->tasks_qty > 0) { ?>
 	<h3 
 			class="project-title <? if ($project->hidden_fl != 'yes') { echo 'opened'; } ?>"
 			id="project-title--<?= $project->id; ?>"
-		>
-		<?= $project->title; ?>(<?= $project->tasks_qty; ?>)
+		>		
+		<?= $project->title; ?>(<?= $project->tasks_qty; ?>)		
 	</h3>
 	
 	<table 
@@ -78,6 +79,7 @@
 			<? } ?>
 		</tbody>
 	</table>
+<? } ?>
 <? } ?>
 	
 <? } ?>

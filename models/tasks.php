@@ -10,13 +10,8 @@ class Tasks extends Models {
 		$task = $this->nullValues($task, ['id', 'parent_task_id', 'due_date', 'closed_date']);
 		
 		$closed_statuses = $this->Projects->getStatuses($task->project_id, 'YES', 'yes');
-		
-		if (in_array($task->status_id, $closed_statuses)) {
-			$task->closed_date = date('Y-m-d H:i:s');
-		}
-		if ($task->id == null) {
-			$task->creation_date = date('Y-m-d H:i:s');
-		}
+		$task->closed_date = (in_array($task->status_id, $closed_statuses) ? ate('Y-m-d H:i:s') : null);
+		if ($task->id == null) { $task->creation_date = date('Y-m-d H:i:s'); }
 
 		$query = "
 			INSERT INTO `tasks` (

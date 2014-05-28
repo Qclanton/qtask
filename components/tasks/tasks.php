@@ -372,11 +372,11 @@ class Tasks extends Components {
 						'filter' => "int",
 						'error_message' => "Incorrect user id"
 					],
-					/*'text' => [
+					'text' => [
 						'filter' => "validate_regexp",
 						'regexp' => "longstring",
 						'error_message' => "Text is too long (max - 4096)"
-					],*/
+					],
 					'creation_date' => [
 						'filter' => "validate_regexp",
 						'regexp' => "date",
@@ -446,11 +446,11 @@ class Tasks extends Components {
 				'regexp' => "shortstring",
 				'error_message' => "Title is too long (max - 255)"
 			],
-			/*'text' => [
+			'text' => [
 				'filter' => "validate_regexp",
 				'regexp' => "longstring",
 				'error_message' => "Text is too long (max - 4096)"
-			],*/
+			],
 			'assigned_type' => [
 				'filter' => "validate_regexp",
 				'options' => ['regexp' => '/(GROUP|USER)/'],

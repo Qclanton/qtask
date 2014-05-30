@@ -20,7 +20,6 @@ class Tasks extends Components {
 		switch ($action) { 
 			case "list":								
 				$this->setListContent($this->get->project_id);				
-				$this->setUserLastVisitDate($this->name);
 				break;
 			case "showsetform":
 				$id = (isset($this->get->id) ? $this->get->id : null);
@@ -294,7 +293,7 @@ class Tasks extends Components {
 		$tasks = $this->Tasks->getTasks($project_id, $params);
 		
 		if (!empty($this->user_id)) {
-			$tasks = $this->Tasks->attachCommentsQty($tasks, $this->user_id, $this->getUserLastVisitDate($this->name));
+			$tasks = $this->Tasks->attachCommentsQty($tasks, $this->user_id);
 		}
 		
 		$this->loadModels(["Projects", "Settings"]);

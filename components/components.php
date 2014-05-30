@@ -55,18 +55,8 @@ class Components extends \System {
 		}
 		
 		return true;
-	}
-	
-	protected function setUserLastVisitDate($layout) {
-		setcookie($layout . "_last_visit_date", date("Y-m-d H:i:s"), time()+31536000);
-	}
-	
-	protected function getUserLastVisitDate($layout) {
-		$date = (isset($_COOKIE[$layout . '_last_visit_date']) ? $_COOKIE[$layout . '_last_visit_date'] : null);
-		
-		return $date;
-	}
-	
+	}	
+
 	protected function uploadImage() {
 		$this->loadHelpers(['Uploader']);
 		$this->Uploader->allowed_extensions = ['png', 'jpg', 'gif'];		

@@ -250,6 +250,7 @@ class Tasks extends Models {
 		
 		return $result;
 	}
+	
 	public function getLastWatchedTasks($user_id, $limit=10) {	
 		$query = "
 			SELECT DISTINCT
@@ -272,6 +273,28 @@ class Tasks extends Models {
 		$tasks = $this->Database->getObject($query, $vars);
 		
 		return $tasks;
+	}
+	
+	public function getLastWatchDate($user_id, $task_id) {
+		$query  = "
+			SELECT 
+				h.`creation_date`
+			FROM 
+				`history` h
+			WHERE 				
+				h.`layout`='user' AND
+				h.`unique_key`='id' AND
+				h.`unique_value`=? AND
+				h.`key`='task_watch' AND
+				h.`value`=?
+			ORDER BY h.`creation_date` DESC
+			LIMIT 1
+		";
+		$vars = [$user_id, $task_id];
+		
+		$date = $this->Database->getValue($query, $vars);
+		
+		return $date;
 	}
 
 
@@ -322,10 +345,12 @@ class Tasks extends Models {
 	}
 	
 	public function attachCommentsQty($tasks, $user_id, $from_date=null) {
-		if (!$tasks) { return false; }
+		if (empty($tasks)) { return false; }		
+		$calculate_date_fl = (empty($from_date) ? 'yes' : 'no');
 		
 		foreach ($tasks as &$task) {
-			$task->comments_qty = $this->getTaskCommentsQty($task->id, $user_id, $from_date);
+			$start_date = ($calculate_date_fl == 'yes' ?  $this->getLastWatchDate($user_id, $task->id) : $from_date);
+			$task->comments_qty = $this->getTaskCommentsQty($task->id, $user_id, $start_date);
 		}
 
 		return $tasks;
